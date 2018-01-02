@@ -1,7 +1,10 @@
 group = 'top.jalo.commons'
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter')
+    compile 'mysql:mysql-connector-java'
+    
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+	compile 'org.springframework.boot:spring-boot-starter-web'
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
