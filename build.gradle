@@ -1,0 +1,48 @@
+group = 'top.jalo'
+
+buildscript {
+	ext {
+		springBootVersion = '1.5.9.RELEASE'
+	}
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath "io.spring.gradle:dependency-management-plugin:0.6.+"
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+	}
+}
+
+allprojects {
+	version = '1.0.0-SNAPSHOT'
+}
+
+subprojects {
+	apply plugin: 'eclipse'
+	apply plugin: 'idea'
+	apply plugin: "io.spring.dependency-management"
+	apply plugin: 'java'
+	apply plugin: 'maven'
+	apply plugin: 'org.springframework.boot'
+
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+	
+	repositories {
+		jcenter()
+		mavenLocal()
+	}
+
+	dependencyManagement {
+		dependencies {
+			
+		}
+	}
+
+	task packageSources(type: Jar) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+	
+	artifacts.archives packageSources
+}

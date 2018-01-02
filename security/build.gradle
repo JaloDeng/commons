@@ -1,0 +1,9 @@
+group = 'top.jalo.commons'
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-security')
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	
+	testCompile('org.springframework.security:spring-security-test')
+}
