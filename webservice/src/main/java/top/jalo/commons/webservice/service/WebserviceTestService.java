@@ -2,16 +2,17 @@ package top.jalo.commons.webservice.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import top.jalo.commons.webservice.entity.WebserviceTestEntity;
+import top.jalo.commons.webservice.model.Sorter;
 import top.jalo.commons.webservice.model.WebserviceTest;
 import top.jalo.commons.webservice.repository.WebserviceTestRepository;
 
@@ -35,8 +36,8 @@ public class WebserviceTestService {
 	 * @param orders
 	 * @return list
 	 */
-	public List<WebserviceTest> findAll(Integer page, Integer size, List<Order> orders) {
-		Page<WebserviceTestEntity> entityPage = webserviceTestRepository.findAll(new PageRequest(page, size, new Sort(orders)));
+	public List<WebserviceTest> findAll(Integer page, Integer size, String sort) {
+		Page<WebserviceTestEntity> entityPage = webserviceTestRepository.findAll(createPageRequest(page - 1, size, Sorter.parse(sort)));
 		List<WebserviceTest> modelList = new ArrayList<>();
 		
 		entityPage.forEach(entity -> {
@@ -141,5 +142,17 @@ public class WebserviceTestService {
 		}
 		
 		return entity;
+	}
+	
+	public static PageRequest createPageRequest(Integer page, Integer size, List<Sorter> sorters) {
+		Sort sort = null;
+		if (sorters != null && !sorters.isEmpty()) {
+			sort = new Sort(sorters.stream().map(sorter -> {
+				return new Sort.Order(
+						sorter.getDirection() == null ? null : Sort.Direction.valueOf(sorter.getDirection().name()),
+						sorter.getProperty());
+			}).collect(Collectors.toList()));
+		}
+		return new PageRequest(page, size, sort);
 	}
 }

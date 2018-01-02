@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,10 +47,10 @@ public class WebserviceTestController {
 	 * @return list
 	 */
 	@GetMapping
-	public @ResponseBody List<WebserviceTest> findAll(@RequestParam(defaultValue = "0") Integer page,
-			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) List<Order> orders,
+	public @ResponseBody List<WebserviceTest> findAll(@RequestParam(defaultValue = "1") Integer page,
+			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sort,
 			HttpServletRequest request, HttpServletResponse response) {
-		return webserviceTestService.findAll(page, size, orders);
+		return webserviceTestService.findAll(page, size, sort);
 	}
 
 	/**
