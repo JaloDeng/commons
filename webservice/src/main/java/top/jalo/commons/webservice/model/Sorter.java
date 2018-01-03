@@ -25,16 +25,22 @@ public class Sorter {
 	
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 	
-	public static List<Sorter> parse(String sort) {
-		if (StringUtils.isEmpty(sort)) {
+	/**
+	 * Convert Sorters from String to List.
+	 * 
+	 * @param sorts
+	 * @return List<Sorter>
+	 */
+	public static List<Sorter> parse(String sorts) {
+		if (StringUtils.isEmpty(sorts)) {
 			return null;
 		}
 		
 		try {
-			OBJECT_MAPPER.readValue(sort, new TypeReference<List<Sorter>>() {
+			return OBJECT_MAPPER.readValue(sorts, new TypeReference<List<Sorter>>() {
 			});
 		} catch (JsonParseException | JsonMappingException e) {
-			return Arrays.stream(StringUtils.split(sort, ",")).map(property -> {
+			return Arrays.stream(StringUtils.split(sorts, ",")).map(property -> {
 				Sorter sorter = new Sorter();
 				if (property.charAt(0) == '-') {
 					sorter.setDirection(Direction.DESC);
@@ -48,8 +54,6 @@ public class Sorter {
 		} catch (IOException e) {
 			return null;
 		}
-		
-		return null;
 	}
 	
 	public String getProperty() {

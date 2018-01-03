@@ -12,6 +12,8 @@ public class WebserviceTest {
 	
 	private String name;
 	
+	private Integer age;
+	
 	private String email;
 
 	public Long getId() {
@@ -28,6 +30,14 @@ public class WebserviceTest {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
 	}
 
 	public String getEmail() {

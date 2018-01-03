@@ -29,6 +29,9 @@ public class WebserviceTestEntity {
 	@Column(name = "name", length = 50, nullable = false, unique = true)
 	private String name;
 	
+	@Column(name = "age", length = 10)
+	private Integer age;
+	
 	@Column(name = "email", length = 100, nullable = false)
 	private String email;
 
@@ -46,6 +49,14 @@ public class WebserviceTestEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
 	}
 
 	public String getEmail() {

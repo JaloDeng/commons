@@ -35,8 +35,9 @@ public class WebserviceTestController {
 	/**
 	 * Query All.
 	 * 
-	 * URL: ./test (default: page = 0, size = 10)
-	 * URL: ./test?page=1&size=2
+	 * URL: (1) ./test (default: page = 1, size = 10)
+	 *      (2) ./test?page=1&size=2&sorts=[{"property": "age", "direction": "ASC"}, {"property": "id", "direction": "DESC"}]
+	 *      
 	 * METHOR: GET
 	 * 
 	 * @param page
@@ -48,9 +49,9 @@ public class WebserviceTestController {
 	 */
 	@GetMapping
 	public @ResponseBody List<WebserviceTest> findAll(@RequestParam(defaultValue = "1") Integer page,
-			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sort,
+			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sorts,
 			HttpServletRequest request, HttpServletResponse response) {
-		return webserviceTestService.findAll(page, size, sort);
+		return webserviceTestService.findAll(page, size, sorts);
 	}
 
 	/**
