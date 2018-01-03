@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,13 +33,13 @@ public class WebserviceTestService {
 	 * @return list
 	 */
 	public List<WebserviceTest> findAll(Integer page, Integer size, String sorts) {
-		Page<WebserviceTestEntity> entityPage = webserviceTestRepository.findAll(ServiceSupport.createPageRequest(page - 1, size, Sorter.parse(sorts)));
 		List<WebserviceTest> modelList = new ArrayList<>();
-		
-		entityPage.forEach(entity -> {
-			modelList.add(convert(entity));
-		});
-		
+
+		webserviceTestRepository.findAll(ServiceSupport.createPageRequest(page - 1, size, Sorter.parse(sorts)))
+				.forEach(entity -> {
+					modelList.add(convert(entity));
+				});
+
 		return modelList;
 	}
 	
@@ -67,11 +66,9 @@ public class WebserviceTestService {
 			return null;
 		}
 		
-		WebserviceTestEntity entity = convert(model);
-		
 		WebserviceTest resultModel = null;
 		try {
-			resultModel = convert(webserviceTestRepository.saveAndFlush(entity));
+			resultModel = convert(webserviceTestRepository.saveAndFlush(convert(model)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

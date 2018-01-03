@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import top.jalo.commons.webservice.model.WebserviceTest;
+import top.jalo.commons.webservice.service.UserService;
 import top.jalo.commons.webservice.service.WebserviceTestService;
 
 /**
@@ -31,6 +32,9 @@ public class WebserviceTestController {
 
 	@Autowired
 	private WebserviceTestService webserviceTestService;
+	
+	@Autowired
+	private UserService userService;
 
 	/**
 	 * Query All. <br>
@@ -106,5 +110,10 @@ public class WebserviceTestController {
 	@DeleteMapping("/{id}")
 	public @ResponseBody Long delete(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
 		return webserviceTestService.delete(id);
+	}
+	
+	@GetMapping("user/{id}")
+	public @ResponseBody WebserviceTest findById(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return userService.findById(id);
 	}
 }

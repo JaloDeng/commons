@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(50) NOT NULL COMMENT '名称',
+  `age` int(10) DEFAULT NULL COMMENT '年龄',
   `email` varchar(100) DEFAULT NULL COMMENT '邮箱',
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_name_unique` (`name`) USING BTREE
