@@ -33,12 +33,12 @@ public class WebserviceTestController {
 	private WebserviceTestService webserviceTestService;
 
 	/**
-	 * Query All.
+	 * Query All. <br>
 	 * 
-	 * URL: (1) ./test (default: page = 1, size = 10)
-	 *      (2) ./test?page=1&size=2&sorts=[{"property": "age", "direction": "ASC"}, {"property": "id", "direction": "DESC"}]
-	 *      
-	 * METHOR: GET
+	 * URL : <br>
+	 * (1) ./test (default: page = 1, size = 10) <br>
+	 * (2) ./test?page=1&size=2&sorts=[{"property": "age", "direction": "ASC"}, {"property": "id", "direction": "DESC"}] <br>
+	 * METHOR : GET <br>
 	 * 
 	 * @param page
 	 * @param size
@@ -55,9 +55,10 @@ public class WebserviceTestController {
 	}
 
 	/**
-	 * Query by id.
+	 * Query by id. <br>
 	 * 
-	 * URL: ./test/1
+	 * URL : ./test/1 <br>
+	 * METHOR : GET <br>
 	 * 
 	 * @param id
 	 * @param request
@@ -71,7 +72,14 @@ public class WebserviceTestController {
 	}
 
 	/**
-	 * Save if model has not id. Update if model has id.
+	 * Save if model has not id. Update if model has id. <br>
+	 * 
+	 * URL : ./test <br>
+	 * METHOR : POST <br>
+	 * CONTENT-TYPE : application/json <br>
+	 * BODY : <br>
+	 * (1) save: {"name": "JALO", "age": 18, "email": "jalo@qq.com"} <br>
+	 * (2) update: {"id": 1, "name": "JALO", "age": 18, "email": "jalo@qq.com"} <br>
 	 * 
 	 * @param model
 	 * @param request
@@ -85,7 +93,10 @@ public class WebserviceTestController {
 	}
 
 	/**
-	 * Delete by id.
+	 * Delete by id. <br>
+	 * 
+	 * URL : ./test/1 <br>
+	 * METHOR : DELETE <br>
 	 * 
 	 * @param id
 	 * @param request
