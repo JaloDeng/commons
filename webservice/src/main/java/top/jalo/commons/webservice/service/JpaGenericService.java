@@ -194,7 +194,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	}
 	
 	/**
-	 * Update all data by model and id.
+	 * Update all column by model and id.
 	 * 
 	 * @param modelId
 	 * @param model
@@ -211,7 +211,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	}
 	
 	/**
-	 * Update all data by model.
+	 * Update all column by model.
 	 * 
 	 * @param referenceEntity
 	 * @param model
@@ -231,7 +231,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	}
 	
 	/**
-	 * Update partial data by model and id.
+	 * Update partial column by model and id.
 	 * 
 	 * @param modelId
 	 * @param model
@@ -248,7 +248,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	}
 	
 	/**
-	 * Update partial data by model.
+	 * Update partial column by model.
 	 * 
 	 * @param referenceEntity
 	 * @param model
