@@ -126,9 +126,6 @@ public class WebserviceTestService {
 		
 		WebserviceTestEntity entity = new WebserviceTestEntity();
 		
-		if (model.getId() != null) {
-			entity.setId(model.getId());
-		}
 		if (model.getName() != null) {
 			entity.setName(model.getName());
 		}

@@ -12,28 +12,26 @@ import top.jalo.commons.webservice.model.WebserviceTest;
  *
  */
 @Service
-public class UserService extends GenericService<WebserviceTestEntity, WebserviceTest, Long, Long> {
+public class UserService extends JpaGenericService<WebserviceTestEntity, WebserviceTest, Long, Long> {
 
 	@Override
-	protected WebserviceTestEntity createEntity(WebserviceTest model, Object... args) throws Exception {
+	protected WebserviceTestEntity createEntity(WebserviceTest model, WebserviceTestEntity referenceEntity,
+			Boolean mergeWhenNotNull, Object... args) throws Exception {
 		if (model == null) {
 			return null;
 		}
-		
-		WebserviceTestEntity entity = new WebserviceTestEntity();
-		if (model.getId() != null) {
-			entity.setId(model.getId());
-		}
-		if (model.getName() != null && !"".equals(model.getName())) {
+
+		WebserviceTestEntity entity = referenceEntity == null ? new WebserviceTestEntity() : referenceEntity;
+		if (!mergeWhenNotNull && model.getName() != null) {
 			entity.setName(model.getName());
 		}
-		if (model.getAge() != null) {
+		if (!mergeWhenNotNull && model.getAge() != null) {
 			entity.setAge(model.getAge());
 		}
-		if (model.getEmail() != null && !"".equals(model.getEmail())) {
+		if (!mergeWhenNotNull && model.getEmail() != null) {
 			entity.setEmail(model.getEmail());
 		}
-		
+
 		return entity;
 	}
 
@@ -42,14 +40,14 @@ public class UserService extends GenericService<WebserviceTestEntity, Webservice
 		if (entity == null) {
 			return null;
 		}
-		
+
 		WebserviceTest model = new WebserviceTest();
-		
+
 		model.setId(entity.getId());
 		model.setName(entity.getName());
 		model.setAge(entity.getAge());
 		model.setEmail(entity.getEmail());
-		
+
 		return model;
 	}
 
