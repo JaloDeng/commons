@@ -47,6 +47,8 @@ public class UserService extends JpaGenericService<WebserviceTestEntity, Webserv
 		model.setName(entity.getName());
 		model.setAge(entity.getAge());
 		model.setEmail(entity.getEmail());
+		model.setCreateDate(entity.getCreateDate());
+		model.setLastModifiedDate(entity.getLastModifiedDate());
 
 		return model;
 	}

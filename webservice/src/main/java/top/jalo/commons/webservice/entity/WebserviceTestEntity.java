@@ -1,7 +1,10 @@
 package top.jalo.commons.webservice.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -9,6 +12,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * Entity : Test
@@ -20,6 +26,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "user")
 @DynamicInsert
 @DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 public class WebserviceTestEntity {
 
 	@Id
@@ -35,6 +42,22 @@ public class WebserviceTestEntity {
 	
 	@Column(name = "email", length = 100, nullable = false)
 	private String email;
+	
+//	@CreatedBy
+	@Column(name = "create_by")
+	private Long createBy;
+	
+	@CreatedDate
+	@Column(name = "create_date")
+	private Date createDate;
+	
+//	@LastModifiedBy
+	@Column(name = "last_modified_by")
+	private Long lastModifiedBy;
+	
+	@LastModifiedDate
+	@Column(name = "last_modified_date")
+	private Date lastModifiedDate;
 
 	public Long getId() {
 		return id;
@@ -62,5 +85,37 @@ public class WebserviceTestEntity {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Long getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(Long createBy) {
+		this.createBy = createBy;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public Long getLastModifiedBy() {
+		return lastModifiedBy;
+	}
+
+	public void setLastModifiedBy(Long lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
 	}
 }

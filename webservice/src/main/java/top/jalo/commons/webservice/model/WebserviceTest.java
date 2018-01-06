@@ -1,5 +1,7 @@
 package top.jalo.commons.webservice.model;
 
+import java.util.Date;
+
 /**
  * Model : Test
  * 
@@ -15,6 +17,14 @@ public class WebserviceTest {
 	private Integer age;
 	
 	private String email;
+	
+	private Long createBy;
+	
+	private Date createDate;
+	
+	private Long lastModifiedBy;
+	
+	private Date lastModifiedDate;
 
 	public Long getId() {
 		return id;
@@ -48,8 +58,41 @@ public class WebserviceTest {
 		this.email = email;
 	}
 
+	public Long getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(Long createBy) {
+		this.createBy = createBy;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public Long getLastModifiedBy() {
+		return lastModifiedBy;
+	}
+
+	public void setLastModifiedBy(Long lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
+	}
+
 	@Override
 	public String toString() {
-		return "WebserviceTest [id=" + id + ", name=" + name + ", age=" + age + ", email=" + email + "]";
+		return "WebserviceTest [id=" + id + ", name=" + name + ", age=" + age + ", email=" + email + ", createDate="
+				+ createDate + ", lastModifiedDate=" + lastModifiedDate + "]";
 	}
 }

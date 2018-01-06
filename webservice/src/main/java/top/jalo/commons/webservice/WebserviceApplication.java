@@ -2,6 +2,7 @@ package top.jalo.commons.webservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
  * Application : Webservice
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
+@EnableJpaAuditing
 public class WebserviceApplication {
 
 	public static void main(String[] args) {
