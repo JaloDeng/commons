@@ -2,6 +2,7 @@
 bin
 build
 data
+*.log
 target
 /build/
 !gradle/wrapper/gradle-wrapper.jar

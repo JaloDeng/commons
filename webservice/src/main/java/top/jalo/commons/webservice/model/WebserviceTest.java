@@ -47,4 +47,9 @@ public class WebserviceTest {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	@Override
+	public String toString() {
+		return "WebserviceTest [id=" + id + ", name=" + name + ", age=" + age + ", email=" + email + "]";
+	}
 }

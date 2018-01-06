@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,8 @@ import top.jalo.commons.webservice.model.Sorter;
  * @param <MID>
  */
 public abstract class JpaGenericService<E, M, EID extends Serializable, MID extends Serializable> {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(JpaGenericService.class);
 
 	@Autowired
 	private JpaRepository<E, EID> jpaRepository;
@@ -97,15 +101,20 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 */
 	public M findById(MID modelId, Object... args) throws Exception {
 		if (modelId == null) {
+			LOGGER.error("Id is null.");
 			// TODO: handle exception and throws result message.
+			throw new Exception("Id is null.");
 		}
 		
 		E entity = jpaRepository.findOne(convertToEntityId(modelId));
 		if(entity == null) {
+			LOGGER.error("Can not find model where id is [{}].", modelId);
 			// TODO: handle exception and throws result message.
+			throw new Exception(String.format("Can not find model where id is [%s].", modelId.toString()));
 		}
-		
-		return convertToModel(entity, args);
+		M model = convertToModel(entity, args);
+		LOGGER.info("Model : " + model.toString());
+		return model;
 	}
 	
 	/**
@@ -119,13 +128,16 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	public Collection<M> findByIds(Collection<MID> modelIds, Object... args) throws Exception {
 		List<E> entities = jpaRepository.findAll(modelIds.stream().map(this::convertToEntityId).collect(Collectors.toList()));
 		if (entities == null || entities.isEmpty()) {
+			LOGGER.error("Can not find models by ids.");
 			// TODO: handle exception and throws result message.
+			throw new Exception("Can not find models by ids.");
 		}
 		
 		return entities.stream().map(entity -> {
 			try {
 				return convertToModel(entity, args);
 			} catch (Exception e) {
+				LOGGER.error(e.toString());
 				e.printStackTrace();
 			}
 			return null;
@@ -148,12 +160,15 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		List<M> modelList = new ArrayList<>();
 		entityCollection.forEach(entity -> {
 			try {
-				modelList.add(convertToModel(entity));
+				modelList.add(convertToModel(entity, args));
 			} catch (Exception e) {
+				LOGGER.error(e.toString());
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		});
+		LOGGER.info("Find model's list where page is [{}] and size is [{}]", page, size);
+		LOGGER.info("Model's list : " + modelList.toString());
 		return modelList;
 	}
 	
@@ -186,11 +201,14 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		try {
 			E entity = convertToEntity(model, null, false, args);
 			jpaRepository.saveAndFlush(entity);
-			return convertToModel(entity);
+			M resultModel = convertToModel(entity, args);
+			LOGGER.info("Success to create entity : " + resultModel.toString());
+			return resultModel;
 		} catch (Exception e) {
+			LOGGER.error("Fail to create entity : " + e.toString());
 			// TODO: handle exception and throws result message.
+			throw new Exception("Fail to create entity : " + e.toString());
 		}
-		return null;
 	}
 	
 	/**
@@ -205,7 +223,9 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	public M fullUpdateById(MID modelId, M model, Object... args) throws Exception {
 		E referenceEntity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (referenceEntity == null) {
+			LOGGER.error("Can not find entity where id is [{}] to update full.", modelId);
 			// TODO: handle exception and throws result message.
+			throw new Exception(String.format("Can not find entity where id is [%s] to update full.", modelId.toString()));
 		}
 		return fullUpdate(referenceEntity, model, args);
 	}
@@ -223,11 +243,14 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		try {
 			E entity = convertToEntity(model, referenceEntity, false, args);
 			jpaRepository.saveAndFlush(entity);
-			return convertToModel(entity, args);
+			M resultModel = convertToModel(entity, args);
+			LOGGER.info("Success to update entity full : " + resultModel.toString());
+			return resultModel;
 		} catch (Exception e) {
+			LOGGER.error(e.toString());
 			// TODO: handle exception and throws result message.
+			throw new Exception("Fail to update entity full : " + e.toString());
 		}
-		return null;
 	}
 	
 	/**
@@ -242,7 +265,9 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	public M partialUpdateById(MID modelId, M model, Object... args) throws Exception {
 		E referenceEntity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (referenceEntity == null) {
+			LOGGER.error("Can not find entity where id is [{}] to update partial.", modelId);
 			// TODO: handle exception and throws result message.
+			throw new Exception(String.format("Can not find entity where id is [%s] to update partial.", modelId.toString()));
 		}
 		return partialUpdate(referenceEntity, model, args);
 	}
@@ -260,11 +285,14 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		try {
 			E entity = convertToEntity(model, referenceEntity, true, args);
 			jpaRepository.saveAndFlush(entity);
-			return convertToModel(entity, args);
+			M resultModel = convertToModel(entity, args);
+			LOGGER.info("Success to update entity partial : " + resultModel.toString());
+			return resultModel;
 		} catch (Exception e) {
+			LOGGER.error(e.toString());
 			// TODO: handle exception and throws result message.
+			throw new Exception("Fail to update entity partial : " + e.toString());
 		}
-		return null;
 	}
 	
 	/**
@@ -278,7 +306,9 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	public M deleteById(MID modelId, Object... args) throws Exception {
 		E entity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (entity == null) {
+			LOGGER.error("Can not find entity where id is [{}] to delete.", modelId);
 			// TODO: handle exception and throws result message.
+			throw new Exception(String.format("Can not find entity where id is [%s] to delete.", modelId.toString()));
 		}
 		return delete(entity, args);
 	}
@@ -295,10 +325,12 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		try {
 			M model = convertToModel(entity, args);
 			jpaRepository.delete(entity);
+			LOGGER.info("Success to delete entity : " + model.toString());
 			return model;
 		} catch (Exception e) {
+			LOGGER.error(e.toString());
 			// TODO: handle exception and throws result message.
+			throw new Exception("Fail to delete entity : " + e.toString());
 		}
-		return null;
 	}
 }
