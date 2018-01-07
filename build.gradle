@@ -4,6 +4,9 @@ buildscript {
 	ext {
 		springBootVersion = '1.5.9.RELEASE'
 	}
+	ext['hibernate.version'] = '5.2.12.Final'
+	ext['thymeleaf.version'] = '3.0.9.RELEASE'
+	ext['thymeleaf-layout-dialect.version'] = '2.2.2'
 	repositories {
 		jcenter()
 	}
