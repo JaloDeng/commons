@@ -5,8 +5,86 @@
 <title>Test</title>
 </head>
 <body>
-<h3 th:text="${result.title}"></h3>
-
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2">
+      <div id="accordion" role="tablist">
+        <div class="card">
+          <div class="card-header" role="tab" id="headingOne">
+            <h5 class="mb-0">
+              <a data-toggle="collapse" href="#collapseOne" role="button" aria-expanded="true" aria-controls="collapseOne">
+				权限管理
+              </a>
+            </h5>
+          </div>
+          <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+				用户管理
+            </div>
+            <div class="card-body">
+				角色管理
+            </div>
+            <div class="card-body">
+				部门管理
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" role="tab" id="headingTwo">
+            <h5 class="mb-0">
+              <a data-toggle="collapse" href="#collapseTwo" role="button" aria-expanded="true" aria-controls="collapseTwo">
+				业务管理
+              </a>
+            </h5>
+          </div>
+          <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div class="card-body">
+				客户管理
+            </div>
+            <div class="card-body">
+				项目管理
+            </div>
+            <div class="card-body">
+				合同管理
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-10">
+        <table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Content</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>BlackSonDa</td>
+      <td>Luo</td>
+      <td>薯头</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Brain</td>
+      <td>Super</td>
+      <td>镇长</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>Sure</td>
+      <td>Lu</td>
+      <td>He is back.</td>
+    </tr>
+  </tbody>
+</table>
+  </div>
+</div>
+</div>
 <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

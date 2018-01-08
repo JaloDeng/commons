@@ -22,6 +22,7 @@ public class ViewController {
 	@GetMapping
 	public ModelAndView test(Model model, HttpServletRequest request, HttpServletResponse response) {
 		model.addAttribute("title", "Test Page");
+		model.addAttribute("user", "Jalo");
 		return new ModelAndView("view/test", "result", model);
 	}
 }
