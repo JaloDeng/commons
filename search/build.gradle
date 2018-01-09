@@ -1,10 +1,10 @@
 group = 'top.jalo.commons'
 
 dependencies {
-	compile 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-	compile 'org.springframework.boot:spring-boot-starter-web'
+	compile('org.springframework.boot:spring-boot-starter-data-elasticsearch')
+	compile('org.springframework.boot:spring-boot-starter-web')
 	
-	compile 'net.java.dev.jna:jna:4.5.1'
+	compile('net.java.dev.jna:jna:4.5.1')
 	
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
