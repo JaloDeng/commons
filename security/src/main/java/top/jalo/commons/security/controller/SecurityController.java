@@ -14,7 +14,7 @@ public class SecurityController {
 	
 	@GetMapping({"/", "/home"})
 	public String home() {
-		return "home";
+		return "view/test";
 	}
 	
 	@GetMapping("/hello")
