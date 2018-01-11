@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" style="height: 100%;">
 <head th:replace="~{fragments/header :: header}">
 <title>Test</title>
 </head>
-<body>
-<div class="container-fluid">
-  <div class="row">
+<body style="height: 100%;">
+<div class="container-fluid" style="min-height: 100%;">
+  <div class="row" style="overflow: auto;padding-bottom: 120px;">
     <div class="col-sm-2">
       <div id="accordion" role="tablist">
         <div class="card">
@@ -18,15 +18,9 @@
             </h5>
           </div>
           <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-            <div class="card-body">
-				用户管理
-            </div>
-            <div class="card-body">
-				角色管理
-            </div>
-            <div class="card-body">
-				部门管理
-            </div>
+            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="user" style="text-align: center;">用户管理</a>
+            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="role" style="text-align: center;">角色管理</a>
+            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="group" style="text-align: center;">部门管理</a>
           </div>
         </div>
         <div class="card">
@@ -86,6 +80,6 @@
     </div>
   </div>
 </div>
-<div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/footer :: footer}" style="position: relative;margin-top: -112px;height: 56px;clear:both;"></div>
 </body>
 </html>
