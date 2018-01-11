@@ -12,13 +12,15 @@
     body {
       animation-name: move;
       animation-duration: 20s;
-      animation-delay: 5s;
       animation-iteration-count: infinite;
-      animation-play-state: running;
       background: url("/image/background_first.jpg");
+      background-size: 100%;
     }
     .form-signin {
 	  background: none;
+	  filter: alpha(Opacity=60);
+	  -moz-opacity: 0.6;
+	  opacity: 0.6; 
 	  border: 0px;
 	  margin: 0 auto;
 	  margin-top: 10%;
@@ -27,9 +29,9 @@
 	}
     @keyframes move
     {
-      0%   {background:url("/image/background_first.jpg");}
-      50%  {background:url("/image/background_second.jpg");}
-      100% {background:url("/image/background_first.jpg");}
+      0%   {background:url("/image/background_first.jpg");background-size: 100%;}
+      50%  {background:url("/image/background_second.jpg");background-size: 100%;}
+      100% {background:url("/image/background_first.jpg");background-size: 100%;}
     }
   </style>
 </head>
