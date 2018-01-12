@@ -7,16 +7,12 @@
 <body style="height: 100%;">
 <div class="container-fluid" style="min-height: 100%;">
   <div class="row" style="overflow: auto;padding-bottom: 120px;">
-    <div class="col-sm-2">
+    <div class="col-sm-2" style="padding: 0px;">
       <div id="accordion" role="tablist">
         <div class="card">
-          <div class="card-header" role="tab" id="headingOne">
-            <h5 class="mb-0">
-              <a data-toggle="collapse" href="#collapseOne" role="button" aria-expanded="true" aria-controls="collapseOne">
-				权限管理
-              </a>
-            </h5>
-          </div>
+          <a class="card-header" role="tab" id="headingOne" data-toggle="collapse" href="#collapseOne" style="text-align: center;text-decoration: none;font-weight: bold;color: #F0F0F0;background-color: #353942;">
+			权限管理
+          </a>
           <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
             <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="user" style="text-align: center;">用户管理</a>
             <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="role" style="text-align: center;">角色管理</a>
@@ -24,28 +20,44 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-header" role="tab" id="headingTwo">
-            <h5 class="mb-0">
-              <a data-toggle="collapse" href="#collapseTwo" role="button" aria-expanded="true" aria-controls="collapseTwo">
-				业务管理
-              </a>
-            </h5>
-          </div>
+          <a class="card-header" role="tab" id="headingTwo" data-toggle="collapse" href="#collapseTwo" style="text-align: center;text-decoration: none;font-weight: bold;color: #F0F0F0;background-color: #353942;">
+			资料管理
+          </a>
           <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
-            <div class="card-body">
-				客户管理
-            </div>
-            <div class="card-body">
-				项目管理
-            </div>
-            <div class="card-body">
-				合同管理
-            </div>
+            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="customer" style="text-align: center;">客户管理</a>
+            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="employee" style="text-align: center;">员工管理</a>
+          </div>
+        </div>
+        <div class="card">
+          <a class="card-header" role="tab" id="headingThree" data-toggle="collapse" href="#collapseThree" style="text-align: center;text-decoration: none;font-weight: bold;color: #F0F0F0;background-color: #353942;">
+			业务管理
+          </a>
+          <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
+            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="project" style="text-align: center;">项目管理</a>
+            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="contract" style="text-align: center;">合同管理</a>
+          </div>
+        </div>
+        <div class="card">
+          <a class="card-header" role="tab" id="headingFour" data-toggle="collapse" href="#collapseFour" style="text-align: center;text-decoration: none;font-weight: bold;color: #F0F0F0;background-color: #353942;">
+			未知菜单
+          </a>
+          <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion">
+            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="project" style="text-align: center;">未知菜单项</a>
+            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="contract" style="text-align: center;">未知菜单项</a>
+          </div>
+        </div>
+        <div class="card">
+          <a class="card-header" role="tab" id="headingFive" data-toggle="collapse" href="#collapseFive" style="text-align: center;text-decoration: none;font-weight: bold;color: #F0F0F0;background-color: #353942;">
+			未知菜单
+          </a>
+          <div id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingFive" data-parent="#accordion">
+            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="project" style="text-align: center;">未知菜单项</a>
+            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="contract" style="text-align: center;">未知菜单项</a>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-sm-10">
+    <div class="col-sm-10" style="padding: 15px;">
         <!-- <h1 align="center" th:text="${result.title}"></h1> -->
         <table class="table table-bordered table-hover">
           <thead>
@@ -59,15 +71,15 @@
           <tbody>
             <tr>
               <th scope="row">1</th>
-              <td>小蛇</td>
-              <td>桑</td>
-              <td>李小龙徒弟</td>
+              <td>屌丝</td>
+              <td>达</td>
+              <td>反贪组扫地</td>
             </tr>
             <tr>
               <th scope="row">2</th>
-              <td>波</td>
+              <td>超</td>
               <td>桑</td>
-              <td>扫黄局局长</td>
+              <td>反贪局长</td>
             </tr>
             <tr>
               <th scope="row">3</th>
