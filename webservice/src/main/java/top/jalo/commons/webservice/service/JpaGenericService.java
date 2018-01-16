@@ -3,7 +3,9 @@ package top.jalo.commons.webservice.service;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -13,7 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
 
+import top.jalo.commons.util.check.StringUtils;
 import top.jalo.commons.webservice.model.Sorter;
 
 /**
@@ -91,6 +96,13 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		return (MID) entityId;
 	}
 	
+	public ModelAndView findById(MID modelId, Model model, String viewName, Object... args) throws Exception {
+		StringUtils.isViewNameBlank(viewName);
+		model.addAttribute("data", findById(modelId));
+		model.addAttribute("success", true);
+		return new ModelAndView(viewName, "result", model);
+	}
+	
 	/**
 	 * Query one by id.
 	 * 
@@ -107,7 +119,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		}
 		
 		E entity = jpaRepository.findOne(convertToEntityId(modelId));
-		if(entity == null) {
+		if (entity == null) {
 			LOGGER.error("Can not find model where id is [{}].", modelId);
 			// TODO: handle exception and throws result message.
 			throw new Exception(String.format("Can not find model where id is [%s].", modelId.toString()));
@@ -115,6 +127,13 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		M model = convertToModel(entity, args);
 		LOGGER.info("Model : " + model.toString());
 		return model;
+	}
+	
+	public ModelAndView findByIds(Collection<MID> modelIds, Model model, String viewName, Object... args) throws Exception {
+		StringUtils.isViewNameBlank(viewName);
+		model.addAttribute("data", findByIds(modelIds));
+		model.addAttribute("success", true);
+		return new ModelAndView(viewName, "result", model);
 	}
 	
 	/**
@@ -144,6 +163,13 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		}).collect(Collectors.toList());
 	}
 	
+	public ModelAndView findAll(Integer page, Integer size, String sorts, Model model, String viewName, Object... args) throws Exception {
+		StringUtils.isViewNameBlank(viewName);
+		model.addAttribute("data", findAll(page, size, sorts, args));
+		model.addAttribute("success", true);
+		return new ModelAndView(viewName, "result", model);
+	}
+	
 	/**
 	 * Query all.
 	 * 
@@ -154,7 +180,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @return modelList
 	 * @throws Exception
 	 */
-	public List<M> findAll(Integer page, Integer size, String sorts, Object... args) throws Exception {
+	public Map<String, Object> findAll(Integer page, Integer size, String sorts, Object... args) throws Exception {
 		Pageable pageable = ServiceSupport.createPageRequest(page - 1, size, Sorter.parse(sorts));
 		Page<E> entityCollection = jpaRepository.findAll(pageable);
 		List<M> modelList = new ArrayList<>();
@@ -167,9 +193,12 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 				e.printStackTrace();
 			}
 		});
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("data", modelList);
+		resultMap.put("total", "");
 		LOGGER.info("Find model's list where page is [{}] and size is [{}]", page, size);
 		LOGGER.info("Model's list : " + modelList.toString());
-		return modelList;
+		return resultMap;
 	}
 	
 	/**
@@ -187,6 +216,13 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		ServiceSupport.createPageRequest(page - 1, size, Sorter.parse(sorts));
 		jpaSpecificationExecutor.count(null);
 		return null;
+	}
+	
+	public ModelAndView create(M m, Model model, String viewName, Object... args) throws Exception {
+		StringUtils.isViewNameBlank(viewName);
+		model.addAttribute("data", create(m, args));
+		model.addAttribute("success", true);
+		return new ModelAndView(viewName, "result", model);
 	}
 	
 	/**
@@ -209,6 +245,13 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			// TODO: handle exception and throws result message.
 			throw new Exception("Fail to create entity : " + e.toString());
 		}
+	}
+	
+	public ModelAndView fullUpdateById(MID modelId, M m, Model model, String viewName, Object... args) throws Exception {
+		StringUtils.isViewNameBlank(viewName);
+		model.addAttribute("data", fullUpdateById(modelId, m, args));
+		model.addAttribute("success", true);
+		return new ModelAndView(viewName, "result", model);
 	}
 	
 	/**
@@ -253,6 +296,13 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		}
 	}
 	
+	public ModelAndView partialUpdateById(MID modelId, M m, Model model, String viewName, Object... args) throws Exception {
+		StringUtils.isViewNameBlank(viewName);
+		model.addAttribute("data", partialUpdateById(modelId, m, args));
+		model.addAttribute("success", true);
+		return new ModelAndView(viewName, "result", model);
+	}
+	
 	/**
 	 * Update partial column by model and id.
 	 * 
@@ -293,6 +343,13 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			// TODO: handle exception and throws result message.
 			throw new Exception("Fail to update entity partial : " + e.toString());
 		}
+	}
+	
+	public ModelAndView deleteById(MID modelId, Model model, String viewName, Object... args) throws Exception {
+		StringUtils.isViewNameBlank(viewName);
+		model.addAttribute("data", deleteById(modelId, args));
+		model.addAttribute("success", true);
+		return new ModelAndView(viewName, "result", model);
 	}
 	
 	/**

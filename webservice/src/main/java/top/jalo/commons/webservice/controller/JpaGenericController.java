@@ -1,7 +1,7 @@
 package top.jalo.commons.webservice.controller;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -73,7 +73,7 @@ public abstract class JpaGenericController<M, MID extends Serializable> {
 	 */
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody List<M> findAll(@RequestParam(defaultValue = "1") Integer page,
+	public @ResponseBody Map<String, Object> findAll(@RequestParam(defaultValue = "1") Integer page,
 			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sorts,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return service.findAll(page, size, sorts);
@@ -151,12 +151,15 @@ public abstract class JpaGenericController<M, MID extends Serializable> {
 	 * METHOR : DELETE <br>
 	 * 
 	 * @param id
+	 * @param request
+	 * @param response
 	 * @return
 	 * @throws Exception
 	 */
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody M deleteById(@PathVariable MID id) throws Exception {
+	public @ResponseBody M deleteById(@PathVariable MID id, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		return service.deleteById(id);
 	}
 }
