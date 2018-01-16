@@ -34,6 +34,16 @@ public abstract class JpaGenericMVController<M, MID extends Serializable> {
 
 	protected abstract JpaGenericService<?, M, ?, MID> getService();
 
+	/**
+	 * Query one by id.
+	 *
+	 * @param id
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public ModelAndView findById(@PathVariable MID id, Model model, HttpServletRequest request,
@@ -41,6 +51,18 @@ public abstract class JpaGenericMVController<M, MID extends Serializable> {
 		return service.findById(id, model, "");
 	}
 
+	/**
+	 * Query all.
+	 *
+	 * @param model
+	 * @param page
+	 * @param size
+	 * @param sorts
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public ModelAndView findAll(Model model, @RequestParam(defaultValue = "1") Integer page,
@@ -49,6 +71,16 @@ public abstract class JpaGenericMVController<M, MID extends Serializable> {
 		return service.findAll(page, size, sorts, model, "");
 	}
 
+	/**
+	 * Create by m.
+	 *
+	 * @param m
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ModelAndView create(@RequestBody M m, Model model, HttpServletRequest request, HttpServletResponse response)
@@ -56,6 +88,17 @@ public abstract class JpaGenericMVController<M, MID extends Serializable> {
 		return service.create(m, model, "");
 	}
 
+	/**
+	 * Update all column by model and id.
+	 *
+	 * @param id
+	 * @param m
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public ModelAndView fullUpdateById(@PathVariable MID id, @RequestBody M m, Model model, HttpServletRequest request,
@@ -63,6 +106,17 @@ public abstract class JpaGenericMVController<M, MID extends Serializable> {
 		return service.fullUpdateById(id, m, model, "");
 	}
 
+	/**
+	 * Update all column by model and id.
+	 *
+	 * @param id
+	 * @param m
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	@PatchMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public ModelAndView partialUpdateById(@PathVariable MID id, @RequestBody M m, Model model,
@@ -70,6 +124,16 @@ public abstract class JpaGenericMVController<M, MID extends Serializable> {
 		return service.partialUpdateById(id, m, model, "");
 	}
 
+	/**
+	 * Delete by id.
+	 *
+	 * @param id
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public ModelAndView deleteById(@PathVariable MID id, Model model, HttpServletRequest request,

@@ -96,6 +96,16 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		return (MID) entityId;
 	}
 	
+	/**
+	 * Query one by id.
+	 *
+	 * @param modelId
+	 * @param model
+	 * @param viewName
+	 * @param args
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	public ModelAndView findById(MID modelId, Model model, String viewName, Object... args) throws Exception {
 		StringUtils.isViewNameBlank(viewName);
 		model.addAttribute("data", findById(modelId));
@@ -129,6 +139,16 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		return model;
 	}
 	
+	/**
+	 * Query collection by id's collection.
+	 *
+	 * @param modelIds
+	 * @param model
+	 * @param viewName
+	 * @param args
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	public ModelAndView findByIds(Collection<MID> modelIds, Model model, String viewName, Object... args) throws Exception {
 		StringUtils.isViewNameBlank(viewName);
 		model.addAttribute("data", findByIds(modelIds));
@@ -163,6 +183,18 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		}).collect(Collectors.toList());
 	}
 	
+	/**
+	 * Query all.
+	 *
+	 * @param page
+	 * @param size
+	 * @param sorts
+	 * @param model
+	 * @param viewName
+	 * @param args
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	public ModelAndView findAll(Integer page, Integer size, String sorts, Model model, String viewName, Object... args) throws Exception {
 		StringUtils.isViewNameBlank(viewName);
 		model.addAttribute("data", findAll(page, size, sorts, args));
@@ -218,6 +250,16 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		return null;
 	}
 	
+	/**
+	 * Create by m.
+	 *
+	 * @param m
+	 * @param model
+	 * @param viewName
+	 * @param args
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	public ModelAndView create(M m, Model model, String viewName, Object... args) throws Exception {
 		StringUtils.isViewNameBlank(viewName);
 		model.addAttribute("data", create(m, args));
@@ -247,6 +289,17 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		}
 	}
 	
+	/**
+	 * Update all column by model and id.
+	 *
+	 * @param modelId
+	 * @param m
+	 * @param model
+	 * @param viewName
+	 * @param args
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	public ModelAndView fullUpdateById(MID modelId, M m, Model model, String viewName, Object... args) throws Exception {
 		StringUtils.isViewNameBlank(viewName);
 		model.addAttribute("data", fullUpdateById(modelId, m, args));
@@ -296,6 +349,17 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		}
 	}
 	
+	/**
+	 * Update partial column by model and id.
+	 *
+	 * @param modelId
+	 * @param m
+	 * @param model
+	 * @param viewName
+	 * @param args
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	public ModelAndView partialUpdateById(MID modelId, M m, Model model, String viewName, Object... args) throws Exception {
 		StringUtils.isViewNameBlank(viewName);
 		model.addAttribute("data", partialUpdateById(modelId, m, args));
@@ -345,6 +409,16 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		}
 	}
 	
+	/**
+	 * Delete by id.
+	 *
+	 * @param modelId
+	 * @param model
+	 * @param viewName
+	 * @param args
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	public ModelAndView deleteById(MID modelId, Model model, String viewName, Object... args) throws Exception {
 		StringUtils.isViewNameBlank(viewName);
 		model.addAttribute("data", deleteById(modelId, args));
