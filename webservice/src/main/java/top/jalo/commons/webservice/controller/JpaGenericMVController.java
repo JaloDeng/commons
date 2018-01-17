@@ -27,12 +27,10 @@ import top.jalo.commons.webservice.service.JpaGenericService;
  * @Author JALO
  *
  */
-public abstract class JpaGenericMVController<M, MID extends Serializable> {
+public abstract class JpaGenericMVController<E, M, EID extends Serializable, MID extends Serializable> {
 
 	@Autowired
-	private JpaGenericService<?, M, ?, MID> service;
-
-	protected abstract JpaGenericService<?, M, ?, MID> getService();
+	private JpaGenericService<E, M, EID, MID> service;
 
 	/**
 	 * Query one by id.
