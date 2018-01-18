@@ -16,7 +16,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
-import top.jalo.commons.util.check.StringUtils;
+import top.jalo.commons.util.StringUtils;
 import top.jalo.commons.webservice.model.Result;
 import top.jalo.commons.webservice.model.Sorter;
 

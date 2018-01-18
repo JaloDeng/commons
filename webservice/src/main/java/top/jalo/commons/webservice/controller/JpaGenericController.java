@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import top.jalo.commons.util.annotation.ViewFinder;
 import top.jalo.commons.webservice.model.Result;
 import top.jalo.commons.webservice.service.JpaGenericService;
 
@@ -35,8 +36,6 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	@Autowired
 	private JpaGenericService<E, M, EID, MID> service;
 
-	protected String viewName = this.getClass().getSimpleName().split("Controller")[0].toLowerCase();
-	
 	/**
 	 * Query one by id. <br>
 	 * 
@@ -72,7 +71,7 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	public ModelAndView findAllAndView(@RequestParam(defaultValue = "1") Integer page,
 			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sorts,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return service.findAll(page, size, sorts, String.format("view/%sGrid", viewName));
+		return service.findAll(page, size, sorts, String.format("%sGrid", ViewFinder.getView(this.getClass())));
 	}
 	
 	/**
@@ -183,5 +182,10 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 			throws Exception {
 		return service.deleteById(id);
 	}
-
+	
+	@GetMapping("/view")
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody String view() {
+		return ViewFinder.getView(this.getClass());
+	}
 }

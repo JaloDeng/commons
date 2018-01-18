@@ -1,4 +1,4 @@
-package top.jalo.commons.util.check;
+package top.jalo.commons.util;
 
 /**
  *
