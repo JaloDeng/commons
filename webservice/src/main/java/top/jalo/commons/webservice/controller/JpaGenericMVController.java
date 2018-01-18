@@ -63,10 +63,10 @@ public abstract class JpaGenericMVController<E, M, EID extends Serializable, MID
 	 */
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public ModelAndView findAll(Model model, @RequestParam(defaultValue = "1") Integer page,
+	public ModelAndView findAll(@RequestParam(defaultValue = "1") Integer page,
 			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sorts,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return service.findAll(page, size, sorts, model, "");
+		return service.findAll(page, size, sorts, "");
 	}
 
 	/**

@@ -196,12 +196,10 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	public ModelAndView findAll(Integer page, Integer size, String sorts, Model model, String viewName, Object... args)
+	public ModelAndView findAll(Integer page, Integer size, String sorts, String viewName, Object... args)
 			throws Exception {
 		StringUtils.isViewNameBlank(viewName);
-		model.addAttribute("data", findAll(page, size, sorts, args));
-		model.addAttribute("success", true);
-		return new ModelAndView(viewName, "result", model);
+		return new ModelAndView(viewName, "result", findAll(page, size, sorts, args));
 	}
 
 	/**

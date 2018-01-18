@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
 
 import top.jalo.commons.webservice.model.Result;
 import top.jalo.commons.webservice.service.JpaGenericService;
@@ -34,6 +35,8 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	@Autowired
 	private JpaGenericService<E, M, EID, MID> service;
 
+	protected String viewName = this.getClass().getSimpleName().split("Controller")[0].toLowerCase();
+	
 	/**
 	 * Query one by id. <br>
 	 * 
@@ -54,11 +57,31 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	}
 
 	/**
+	 * Query all and return grid.
+	 *
+	 * @param page
+	 * @param size
+	 * @param sorts
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@GetMapping("/grid")
+	@ResponseStatus(HttpStatus.OK)
+	public ModelAndView findAllAndView(@RequestParam(defaultValue = "1") Integer page,
+			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sorts,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return service.findAll(page, size, sorts, String.format("view/%sGrid", viewName));
+	}
+	
+	/**
 	 * Query all. <br>
 	 * 
 	 * URL : <br>
 	 * (1) ./user (default: page = 1, size = 10) <br>
-	 * (2) ./user?page=1&size=2&sorts=[{"property": "age", "direction": "ASC"}, {"property": "id", "direction": "DESC"}] <br>
+	 * (2) ./user?page=1&size=2&sorts=[{"property": "age", "direction": "ASC"},
+	 * {"property": "id", "direction": "DESC"}] <br>
 	 * METHOR : GET <br>
 	 * 
 	 * @param page
@@ -80,7 +103,7 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	/**
 	 * Create by model.
 	 * 
-	 * URL : ./user
+	 * URL : ./user <br>
 	 * METHOR : POST <br>
 	 * CONTENT-TYPE : application/json <br>
 	 * BODY : {"name": "JALO", "age": 18, "email": "jalo@qq.com"} <br>
@@ -99,9 +122,9 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	}
 
 	/**
-	 * Update all column by model and id.
+	 * Update all column by model and id. <br>
 	 * 
-	 * URL : ./user
+	 * URL : ./user <br> 
 	 * METHOR : PUT <br>
 	 * CONTENT-TYPE : application/json <br>
 	 * BODY : {"id": 1, "name": "JALO", "age": 18, "email": "jalo@qq.com"} <br>
@@ -119,11 +142,11 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 			HttpServletResponse response) throws Exception {
 		return service.fullUpdateById(id, model);
 	}
-	
+
 	/**
 	 * Update partial column by model and id.
 	 * 
-	 * URL : ./user
+	 * URL : ./user <br>
 	 * METHOR : PATCH <br>
 	 * CONTENT-TYPE : application/json <br>
 	 * BODY : {"id": 1, "name": "JALO", "age": 18, "email": "jalo@qq.com"} <br>
@@ -141,7 +164,7 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 			HttpServletResponse response) throws Exception {
 		return service.partialUpdateById(id, model);
 	}
-	
+
 	/**
 	 * Delete by id.
 	 * 
@@ -156,8 +179,9 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	 */
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody M deleteById(@PathVariable MID id, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public @ResponseBody M deleteById(@PathVariable MID id, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		return service.deleteById(id);
 	}
+
 }
