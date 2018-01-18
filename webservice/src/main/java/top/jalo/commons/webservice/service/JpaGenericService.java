@@ -1,17 +1,15 @@
 package top.jalo.commons.webservice.service;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -19,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 import top.jalo.commons.util.check.StringUtils;
+import top.jalo.commons.webservice.model.Result;
 import top.jalo.commons.webservice.model.Sorter;
 
 /**
@@ -41,9 +40,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	@Autowired
 	private JpaSpecificationExecutor<E> jpaSpecificationExecutor;
 
-	protected abstract E createEntity(M model, E referenceEntity, Boolean mergeIfNotNull, Object... args)
-			throws Exception;
-
+	protected abstract E createEntity(M model, E referenceEntity, Boolean mergeIfNotNull, Object... args) throws Exception;
 	protected abstract M createModel(E entity, Object... args) throws Exception;
 
 	/**
@@ -217,33 +214,20 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @return modelList
 	 * @throws Exception
 	 */
-	public Map<String, Object> findAll(Integer page, Integer size, String sorts, Object... args) throws Exception {
+	public Result<?> findAll(Integer page, Integer size, String sorts, Object... args) throws Exception {
 		Pageable pageable = ServiceSupport.createPageRequest(page - 1, size, Sorter.parse(sorts));
 		Page<E> entityCollection = jpaRepository.findAll(pageable);
-		List<M> modelList = new ArrayList<>();
-		Integer currentPage = entityCollection.getNumber() + 1;
-		Integer currentCount = entityCollection.getNumberOfElements();
-		Long total = entityCollection.getTotalElements();
-		Integer totalPage = entityCollection.getTotalPages();
-		entityCollection.forEach(entity -> {
+		Page<M> modelCollection = new PageImpl<>(entityCollection.getContent().stream().map(entity -> {
 			try {
-				modelList.add(convertToModel(entity, args));
+				return convertToModel(entity, args);
 			} catch (Exception e) {
-				LOGGER.error(e.toString());
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				return null;
 			}
-		});
-		Map<String, Object> resultMap = new HashMap<>();
-		resultMap.put("data", modelList);
-		resultMap.put("currentPage", currentPage);
-		resultMap.put("currentCount", currentCount);
-		resultMap.put("total", total);
-		resultMap.put("totalPage", totalPage);
-		LOGGER.info("Data's total is [{}], total page is [{}], current count is [{}], current page is [{}].", total,
-				totalPage, currentCount, currentPage);
-		LOGGER.info("Data's list : " + modelList.toString());
-		return resultMap;
+		}).collect(Collectors.toList()), pageable, entityCollection.getTotalElements());
+		LOGGER.info("Data's total is [{}], total page is [{}], current count is [{}], current page is [{}].", modelCollection.getTotalElements(),
+				modelCollection.getTotalPages(), modelCollection.getNumberOfElements(), modelCollection.getNumber() + 1);
+		LOGGER.info("Data's collection : " + modelCollection.getContent().toString());
+		return new Result<>(modelCollection);
 	}
 
 	/**

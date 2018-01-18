@@ -1,7 +1,6 @@
 package top.jalo.commons.webservice.controller;
 
 import java.io.Serializable;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import top.jalo.commons.webservice.model.Result;
 import top.jalo.commons.webservice.service.JpaGenericService;
 
 /**
@@ -71,7 +71,7 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	 */
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody Map<String, Object> findAll(@RequestParam(defaultValue = "1") Integer page,
+	public @ResponseBody Result<?> findAll(@RequestParam(defaultValue = "1") Integer page,
 			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sorts,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return service.findAll(page, size, sorts);
