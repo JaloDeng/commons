@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 import top.jalo.commons.util.StringUtils;
+import top.jalo.commons.webservice.model.CollectionResult;
 import top.jalo.commons.webservice.model.Result;
 import top.jalo.commons.webservice.model.Sorter;
 
@@ -99,17 +100,14 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * Query one by id.
 	 *
 	 * @param modelId
-	 * @param model
 	 * @param viewName
 	 * @param args
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	public ModelAndView findById(MID modelId, Model model, String viewName, Object... args) throws Exception {
+	public ModelAndView findById(MID modelId, String viewName, Object... args) throws Exception {
 		StringUtils.isViewNameBlank(viewName);
-		model.addAttribute("data", findById(modelId));
-		model.addAttribute("success", true);
-		return new ModelAndView(viewName, "result", model);
+		return new ModelAndView(viewName, "result", findById(modelId));
 	}
 
 	/**
@@ -117,25 +115,23 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * 
 	 * @param modelId
 	 * @param args
-	 * @return model
+	 * @return Result<model>
 	 * @throws Exception
 	 */
-	public M findById(MID modelId, Object... args) throws Exception {
+	public Result<?> findById(MID modelId, Object... args) throws Exception {
 		if (modelId == null) {
 			LOGGER.error("Id is null.");
-			// TODO: handle exception and throws result message.
-			throw new Exception("Id is null.");
+			return new Result<>(new NullPointerException("Id is null."));
 		}
 
 		E entity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (entity == null) {
 			LOGGER.error("Can not find model where id is [{}].", modelId);
-			// TODO: handle exception and throws result message.
-			throw new Exception(String.format("Can not find model where id is [%s].", modelId.toString()));
+			return new Result<>(new NullPointerException(String.format("Can not find model where id is [%s].", modelId.toString())));
 		}
 		M model = convertToModel(entity, args);
 		LOGGER.info("Model : " + model.toString());
-		return model;
+		return new Result<>(model);
 	}
 
 	/**
@@ -190,7 +186,6 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @param page
 	 * @param size
 	 * @param sorts
-	 * @param model
 	 * @param viewName
 	 * @param args
 	 * @return ModelAndView
@@ -209,23 +204,27 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @param size
 	 * @param sorts
 	 * @param args
-	 * @return modelList
+	 * @return CollectionResult
 	 * @throws Exception
 	 */
-	public Result<?> findAll(Integer page, Integer size, String sorts, Object... args) throws Exception {
+	public CollectionResult<?> findAll(Integer page, Integer size, String sorts, Object... args) throws Exception {
 		Pageable pageable = ServiceSupport.createPageRequest(page - 1, size, Sorter.parse(sorts));
-		Page<E> entityCollection = jpaRepository.findAll(pageable);
-		Page<M> modelCollection = new PageImpl<>(entityCollection.getContent().stream().map(entity -> {
+		Page<E> entities = jpaRepository.findAll(pageable);
+		Page<M> models = new PageImpl<>(entities.getContent().stream().map(entity -> {
 			try {
 				return convertToModel(entity, args);
 			} catch (Exception e) {
 				return null;
 			}
-		}).collect(Collectors.toList()), pageable, entityCollection.getTotalElements());
-		LOGGER.info("Data's total is [{}], total page is [{}], current count is [{}], current page is [{}].", modelCollection.getTotalElements(),
-				modelCollection.getTotalPages(), modelCollection.getNumberOfElements(), modelCollection.getNumber() + 1);
-		LOGGER.info("Data's collection : " + modelCollection.getContent().toString());
-		return new Result<>(modelCollection);
+		}).collect(Collectors.toList()), pageable, entities.getTotalElements());
+		if (models.getTotalElements() == 0) {
+			LOGGER.info("Data is empty.");
+			return new CollectionResult<>(new Exception("Data is empty."));
+		}
+		LOGGER.info("Data's total is [{}], total page is [{}], current count is [{}], current page is [{}].", models.getTotalElements(),
+				models.getTotalPages(), models.getNumberOfElements(), models.getNumber() + 1);
+		LOGGER.info("Data's collection : " + models.getContent().toString());
+		return new CollectionResult<>(models);
 	}
 
 	/**

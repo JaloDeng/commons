@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
 
 import top.jalo.commons.util.annotation.ViewFinder;
+import top.jalo.commons.webservice.model.CollectionResult;
 import top.jalo.commons.webservice.model.Result;
 import top.jalo.commons.webservice.service.JpaGenericService;
 
@@ -34,7 +34,7 @@ import top.jalo.commons.webservice.service.JpaGenericService;
 public abstract class JpaGenericController<E, M, EID extends Serializable, MID extends Serializable> {
 
 	@Autowired
-	private JpaGenericService<E, M, EID, MID> service;
+	protected JpaGenericService<E, M, EID, MID> service;
 
 	/**
 	 * Query one by id. <br>
@@ -50,28 +50,9 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	 */
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody M findById(@PathVariable MID id, HttpServletRequest request, HttpServletResponse response)
+	public @ResponseBody Result<?> findById(@PathVariable MID id, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		return service.findById(id);
-	}
-
-	/**
-	 * Query all and return grid.
-	 *
-	 * @param page
-	 * @param size
-	 * @param sorts
-	 * @param request
-	 * @param response
-	 * @return ModelAndView
-	 * @throws Exception
-	 */
-	@GetMapping("/grid")
-	@ResponseStatus(HttpStatus.OK)
-	public ModelAndView findAllAndView(@RequestParam(defaultValue = "1") Integer page,
-			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sorts,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return service.findAll(page, size, sorts, String.format("%sGrid", ViewFinder.getView(this.getClass())));
 	}
 	
 	/**
@@ -93,7 +74,7 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	 */
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody Result<?> findAll(@RequestParam(defaultValue = "1") Integer page,
+	public @ResponseBody CollectionResult<?> findAll(@RequestParam(defaultValue = "1") Integer page,
 			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sorts,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return service.findAll(page, size, sorts);

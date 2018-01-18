@@ -5,7 +5,6 @@ import java.io.Serializable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-import top.jalo.commons.webservice.service.JpaGenericService;
+import top.jalo.commons.util.annotation.ViewFinder;
 
 /**
  * Generic Controller for JPA which all methods return ModelAndView.
@@ -27,10 +26,7 @@ import top.jalo.commons.webservice.service.JpaGenericService;
  * @Author JALO
  *
  */
-public abstract class JpaGenericMVController<E, M, EID extends Serializable, MID extends Serializable> {
-
-	@Autowired
-	private JpaGenericService<E, M, EID, MID> service;
+public abstract class JpaGenericMVController<E, M, EID extends Serializable, MID extends Serializable> extends JpaGenericController<E, M, Serializable, Serializable> {
 
 	/**
 	 * Query one by id.
@@ -44,15 +40,15 @@ public abstract class JpaGenericMVController<E, M, EID extends Serializable, MID
 	 */
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ModelAndView findById(@PathVariable MID id, Model model, HttpServletRequest request,
+	public ModelAndView findByIdAndView(@PathVariable MID id, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		return service.findById(id, model, "");
+//		return service.findById(id, model, "");
+		return null;
 	}
 
 	/**
-	 * Query all.
+	 * Query all and return grid.
 	 *
-	 * @param model
 	 * @param page
 	 * @param size
 	 * @param sorts
@@ -61,12 +57,12 @@ public abstract class JpaGenericMVController<E, M, EID extends Serializable, MID
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	@GetMapping
+	@GetMapping("/grid")
 	@ResponseStatus(HttpStatus.OK)
-	public ModelAndView findAll(@RequestParam(defaultValue = "1") Integer page,
+	public ModelAndView findAllAndView(@RequestParam(defaultValue = "1") Integer page,
 			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sorts,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return service.findAll(page, size, sorts, "");
+		return service.findAll(page, size, sorts, String.format("%sGrid", ViewFinder.getView(this.getClass())));
 	}
 
 	/**

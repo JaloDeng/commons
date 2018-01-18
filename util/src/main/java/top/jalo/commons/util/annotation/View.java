@@ -1,6 +1,3 @@
-/**
- * 
- */
 package top.jalo.commons.util.annotation;
 
 import static java.lang.annotation.ElementType.TYPE;
