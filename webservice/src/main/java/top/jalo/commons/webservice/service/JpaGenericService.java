@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import top.jalo.commons.webservice.exception.HttpStatusException;
+import top.jalo.commons.webservice.exception.ResourceNotFoundException;
 import top.jalo.commons.webservice.model.CollectionResult;
 import top.jalo.commons.webservice.model.Result;
 import top.jalo.commons.webservice.model.Sorter;
@@ -111,8 +111,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		E entity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (entity == null) {
 			LOGGER.error("Can not find model where id is [{}].", modelId);
-			//return new Result<>(new Exception(String.format("Can not find model where id is [%s].", modelId.toString())));
-			throw new HttpStatusException(String.format("Can not find model where id is %s.", modelId.toString()));
+			throw new ResourceNotFoundException(modelId.toString());
 		}
 		M model = convertToModel(entity, args);
 		LOGGER.info("Model : " + model.toString());
