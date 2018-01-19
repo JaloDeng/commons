@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 import top.jalo.commons.util.StringUtils;
@@ -105,7 +104,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	public ModelAndView findById(MID modelId, String viewName, Object... args) throws Exception {
+	public ModelAndView findByIdAndView(MID modelId, String viewName, Object... args) throws Exception {
 		StringUtils.isViewNameBlank(viewName);
 		return new ModelAndView(viewName, "result", findById(modelId));
 	}
@@ -115,23 +114,23 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * 
 	 * @param modelId
 	 * @param args
-	 * @return Result<model>
+	 * @return Result<M>
 	 * @throws Exception
 	 */
-	public Result<?> findById(MID modelId, Object... args) throws Exception {
+	public Result<M> findById(MID modelId, Object... args) throws Exception {
 		if (modelId == null) {
 			LOGGER.error("Id is null.");
-			return new Result<>(new NullPointerException("Id is null."));
+			return new Result<>(new Exception("Id is null."));
 		}
 
 		E entity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (entity == null) {
 			LOGGER.error("Can not find model where id is [{}].", modelId);
-			return new Result<>(new NullPointerException(String.format("Can not find model where id is [%s].", modelId.toString())));
+			return new Result<>(new Exception(String.format("Can not find model where id is [%s].", modelId.toString())));
 		}
 		M model = convertToModel(entity, args);
 		LOGGER.info("Model : " + model.toString());
-		return new Result<>(model);
+		return new Result<M>(model);
 	}
 
 	/**
@@ -144,12 +143,10 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	public ModelAndView findByIds(Collection<MID> modelIds, Model model, String viewName, Object... args)
+	public ModelAndView findByIdsAndView(Collection<MID> modelIds, String viewName, Object... args)
 			throws Exception {
 		StringUtils.isViewNameBlank(viewName);
-		model.addAttribute("data", findByIds(modelIds));
-		model.addAttribute("success", true);
-		return new ModelAndView(viewName, "result", model);
+		return new ModelAndView(viewName, "result", findByIds(modelIds));
 	}
 
 	/**
@@ -191,7 +188,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	public ModelAndView findAll(Integer page, Integer size, String sorts, String viewName, Object... args)
+	public ModelAndView findAllAndView(Integer page, Integer size, String sorts, String viewName, Object... args)
 			throws Exception {
 		StringUtils.isViewNameBlank(viewName);
 		return new ModelAndView(viewName, "result", findAll(page, size, sorts, args));
@@ -204,10 +201,10 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @param size
 	 * @param sorts
 	 * @param args
-	 * @return CollectionResult
+	 * @return CollectionResult<M>
 	 * @throws Exception
 	 */
-	public CollectionResult<?> findAll(Integer page, Integer size, String sorts, Object... args) throws Exception {
+	public CollectionResult<M> findAll(Integer page, Integer size, String sorts, Object... args) throws Exception {
 		Pageable pageable = ServiceSupport.createPageRequest(page - 1, size, Sorter.parse(sorts));
 		Page<E> entities = jpaRepository.findAll(pageable);
 		Page<M> models = new PageImpl<>(entities.getContent().stream().map(entity -> {
@@ -219,12 +216,12 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		}).collect(Collectors.toList()), pageable, entities.getTotalElements());
 		if (models.getTotalElements() == 0) {
 			LOGGER.info("Data is empty.");
-			return new CollectionResult<>(new Exception("Data is empty."));
+		} else {
+			LOGGER.info("Data's total is [{}], total page is [{}], current count is [{}], current page is [{}].", models.getTotalElements(),
+					models.getTotalPages(), models.getNumberOfElements(), models.getTotalElements() == 0 ? 0 :models.getNumber() + 1);
+			LOGGER.info("Data's collection : " + models.getContent().toString());
 		}
-		LOGGER.info("Data's total is [{}], total page is [{}], current count is [{}], current page is [{}].", models.getTotalElements(),
-				models.getTotalPages(), models.getNumberOfElements(), models.getNumber() + 1);
-		LOGGER.info("Data's collection : " + models.getContent().toString());
-		return new CollectionResult<>(models);
+		return new CollectionResult<M>(models);
 	}
 
 	/**
@@ -235,7 +232,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @param size
 	 * @param sorters
 	 * @param args
-	 * @return
+	 * @return Result<M>
 	 * @throws Exception
 	 */
 	public Page<M> find(Collection<String> query, Integer page, Integer size, String sorts, Object... args)
@@ -246,20 +243,17 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	}
 
 	/**
-	 * Create by m.
+	 * Create by model.
 	 *
-	 * @param m
 	 * @param model
 	 * @param viewName
 	 * @param args
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	public ModelAndView create(M m, Model model, String viewName, Object... args) throws Exception {
+	public ModelAndView createAndView(M model, String viewName, Object... args) throws Exception {
 		StringUtils.isViewNameBlank(viewName);
-		model.addAttribute("data", create(m, args));
-		model.addAttribute("success", true);
-		return new ModelAndView(viewName, "result", model);
+		return new ModelAndView(viewName, "result", create(model, args));
 	}
 
 	/**
@@ -267,20 +261,19 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * 
 	 * @param model
 	 * @param args
-	 * @return model
+	 * @return Result<M>
 	 * @throws Exception
 	 */
-	public M create(M model, Object... args) throws Exception {
+	public Result<M> create(M model, Object... args) throws Exception {
 		try {
 			E entity = convertToEntity(model, null, false, args);
 			jpaRepository.saveAndFlush(entity);
 			M resultModel = convertToModel(entity, args);
 			LOGGER.info("Success to create entity : " + resultModel.toString());
-			return resultModel;
+			return new Result<M>(resultModel);
 		} catch (Exception e) {
 			LOGGER.error("Fail to create entity : " + e.toString());
-			// TODO: handle exception and throws result message.
-			throw new Exception("Fail to create entity : " + e.toString());
+			return new Result<>(new Exception("Fail to create entity : " + e.getMessage()));
 		}
 	}
 
@@ -288,19 +281,16 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * Update all column by model and id.
 	 *
 	 * @param modelId
-	 * @param m
 	 * @param model
 	 * @param viewName
 	 * @param args
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	public ModelAndView fullUpdateById(MID modelId, M m, Model model, String viewName, Object... args)
+	public ModelAndView fullUpdateByIdAndView(MID modelId, M model, String viewName, Object... args)
 			throws Exception {
 		StringUtils.isViewNameBlank(viewName);
-		model.addAttribute("data", fullUpdateById(modelId, m, args));
-		model.addAttribute("success", true);
-		return new ModelAndView(viewName, "result", model);
+		return new ModelAndView(viewName, "result", fullUpdateById(modelId, model, args));
 	}
 
 	/**
@@ -309,16 +299,14 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @param modelId
 	 * @param model
 	 * @param args
-	 * @return model
+	 * @return Result<M>
 	 * @throws Exception
 	 */
-	public M fullUpdateById(MID modelId, M model, Object... args) throws Exception {
+	public Result<M> fullUpdateById(MID modelId, M model, Object... args) throws Exception {
 		E referenceEntity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (referenceEntity == null) {
 			LOGGER.error("Can not find entity where id is [{}] to update full.", modelId);
-			// TODO: handle exception and throws result message.
-			throw new Exception(
-					String.format("Can not find entity where id is [%s] to update full.", modelId.toString()));
+			return new Result<>(new Exception(String.format("Can not find entity where id is [%s] to update full.", modelId.toString())));
 		}
 		return fullUpdate(referenceEntity, model, args);
 	}
@@ -329,20 +317,19 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @param referenceEntity
 	 * @param model
 	 * @param args
-	 * @return model
+	 * @return Result<M>
 	 * @throws Exception
 	 */
-	protected M fullUpdate(E referenceEntity, M model, Object... args) throws Exception {
+	protected Result<M> fullUpdate(E referenceEntity, M model, Object... args) throws Exception {
 		try {
 			E entity = convertToEntity(model, referenceEntity, false, args);
 			jpaRepository.saveAndFlush(entity);
 			M resultModel = convertToModel(entity, args);
 			LOGGER.info("Success to update entity full : " + resultModel.toString());
-			return resultModel;
+			return new Result<M>(resultModel);
 		} catch (Exception e) {
 			LOGGER.error(e.toString());
-			// TODO: handle exception and throws result message.
-			throw new Exception("Fail to update entity full : " + e.toString());
+			return new Result<>(new Exception("Fail to update entity full : " + e.getMessage()));
 		}
 	}
 
@@ -350,19 +337,16 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * Update partial column by model and id.
 	 *
 	 * @param modelId
-	 * @param m
 	 * @param model
 	 * @param viewName
 	 * @param args
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	public ModelAndView partialUpdateById(MID modelId, M m, Model model, String viewName, Object... args)
+	public ModelAndView partialUpdateByIdAndView(MID modelId, M model, String viewName, Object... args)
 			throws Exception {
 		StringUtils.isViewNameBlank(viewName);
-		model.addAttribute("data", partialUpdateById(modelId, m, args));
-		model.addAttribute("success", true);
-		return new ModelAndView(viewName, "result", model);
+		return new ModelAndView(viewName, "result", partialUpdateById(modelId, model, args));
 	}
 
 	/**
@@ -371,16 +355,14 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @param modelId
 	 * @param model
 	 * @param args
-	 * @return model
+	 * @return Result<M>
 	 * @throws Exception
 	 */
-	public M partialUpdateById(MID modelId, M model, Object... args) throws Exception {
+	public Result<M> partialUpdateById(MID modelId, M model, Object... args) throws Exception {
 		E referenceEntity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (referenceEntity == null) {
 			LOGGER.error("Can not find entity where id is [{}] to update partial.", modelId);
-			// TODO: handle exception and throws result message.
-			throw new Exception(
-					String.format("Can not find entity where id is [%s] to update partial.", modelId.toString()));
+			return new Result<>(new Exception(String.format("Can not find entity where id is [%s] to update partial.", modelId.toString())));
 		}
 		return partialUpdate(referenceEntity, model, args);
 	}
@@ -391,20 +373,19 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @param referenceEntity
 	 * @param model
 	 * @param args
-	 * @return model
+	 * @return Result<M>
 	 * @throws Exception
 	 */
-	protected M partialUpdate(E referenceEntity, M model, Object... args) throws Exception {
+	protected Result<M> partialUpdate(E referenceEntity, M model, Object... args) throws Exception {
 		try {
 			E entity = convertToEntity(model, referenceEntity, true, args);
 			jpaRepository.saveAndFlush(entity);
 			M resultModel = convertToModel(entity, args);
 			LOGGER.info("Success to update entity partial : " + resultModel.toString());
-			return resultModel;
+			return new Result<M>(resultModel);
 		} catch (Exception e) {
 			LOGGER.error(e.toString());
-			// TODO: handle exception and throws result message.
-			throw new Exception("Fail to update entity partial : " + e.toString());
+			return new Result<>(new Exception("Fail to update entity partial : " + e.getMessage()));
 		}
 	}
 
@@ -412,17 +393,14 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * Delete by id.
 	 *
 	 * @param modelId
-	 * @param model
 	 * @param viewName
 	 * @param args
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	public ModelAndView deleteById(MID modelId, Model model, String viewName, Object... args) throws Exception {
+	public ModelAndView deleteByIdAndView(MID modelId, String viewName, Object... args) throws Exception {
 		StringUtils.isViewNameBlank(viewName);
-		model.addAttribute("data", deleteById(modelId, args));
-		model.addAttribute("success", true);
-		return new ModelAndView(viewName, "result", model);
+		return new ModelAndView(viewName, "result", deleteById(modelId, args));
 	}
 
 	/**
@@ -430,15 +408,14 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * 
 	 * @param modelId
 	 * @param args
-	 * @return model
+	 * @return Result<M>
 	 * @throws Exception
 	 */
-	public M deleteById(MID modelId, Object... args) throws Exception {
+	public Result<M> deleteById(MID modelId, Object... args) throws Exception {
 		E entity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (entity == null) {
 			LOGGER.error("Can not find entity where id is [{}] to delete.", modelId);
-			// TODO: handle exception and throws result message.
-			throw new Exception(String.format("Can not find entity where id is [%s] to delete.", modelId.toString()));
+			return new Result<>(new Exception(String.format("Can not find entity where id is [%s] to delete.", modelId.toString())));
 		}
 		return delete(entity, args);
 	}
@@ -448,19 +425,18 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * 
 	 * @param entity
 	 * @param args
-	 * @return model
+	 * @return Result<M>
 	 * @throws Exception
 	 */
-	protected M delete(E entity, Object... args) throws Exception {
+	protected Result<M> delete(E entity, Object... args) throws Exception {
 		try {
 			M model = convertToModel(entity, args);
 			jpaRepository.delete(entity);
 			LOGGER.info("Success to delete entity : " + model.toString());
-			return model;
+			return new Result<M>(model);
 		} catch (Exception e) {
 			LOGGER.error(e.toString());
-			// TODO: handle exception and throws result message.
-			throw new Exception("Fail to delete entity : " + e.toString());
+			return new Result<>(new Exception("Fail to delete entity : " + e.getMessage()));
 		}
 	}
 }

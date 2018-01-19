@@ -45,12 +45,12 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	 * @param id
 	 * @param request
 	 * @param response
-	 * @return model
+	 * @return Result<M>
 	 * @throws Exception
 	 */
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody Result<?> findById(@PathVariable MID id, HttpServletRequest request, HttpServletResponse response)
+	public @ResponseBody Result<M> findById(@PathVariable MID id, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		return service.findById(id);
 	}
@@ -69,12 +69,12 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	 * @param sorts
 	 * @param request
 	 * @param response
-	 * @return modelList
+	 * @return CollectionResult<M>
 	 * @throws Exception
 	 */
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody CollectionResult<?> findAll(@RequestParam(defaultValue = "1") Integer page,
+	public @ResponseBody CollectionResult<M> findAll(@RequestParam(defaultValue = "1") Integer page,
 			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sorts,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return service.findAll(page, size, sorts);
@@ -91,12 +91,12 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	 * @param model
 	 * @param request
 	 * @param response
-	 * @return model
+	 * @return Result<M>
 	 * @throws Exception
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public @ResponseBody M create(@RequestBody M model, HttpServletRequest request, HttpServletResponse response)
+	public @ResponseBody Result<M> create(@RequestBody M model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		return service.create(model);
 	}
@@ -113,12 +113,12 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	 * @param model
 	 * @param request
 	 * @param response
-	 * @return
+	 * @return Result<M>
 	 * @throws Exception
 	 */
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody M fullUpdateById(@PathVariable MID id, @RequestBody M model, HttpServletRequest request,
+	public @ResponseBody Result<M> fullUpdateById(@PathVariable MID id, @RequestBody M model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		return service.fullUpdateById(id, model);
 	}
@@ -135,12 +135,12 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	 * @param model
 	 * @param request
 	 * @param response
-	 * @return
+	 * @return Result<M>
 	 * @throws Exception
 	 */
 	@PatchMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody M partialUpdateById(@PathVariable MID id, @RequestBody M model, HttpServletRequest request,
+	public @ResponseBody Result<M> partialUpdateById(@PathVariable MID id, @RequestBody M model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		return service.partialUpdateById(id, model);
 	}
@@ -154,12 +154,12 @@ public abstract class JpaGenericController<E, M, EID extends Serializable, MID e
 	 * @param id
 	 * @param request
 	 * @param response
-	 * @return
+	 * @return Result<M>
 	 * @throws Exception
 	 */
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody M deleteById(@PathVariable MID id, HttpServletRequest request, HttpServletResponse response)
+	public @ResponseBody Result<M> deleteById(@PathVariable MID id, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		return service.deleteById(id);
 	}

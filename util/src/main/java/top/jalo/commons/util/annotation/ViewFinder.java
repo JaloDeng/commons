@@ -12,4 +12,7 @@ public class ViewFinder {
 		return view.value();
 	}
 	
+	public static String getView(Object obj) {
+		return getView(obj.getClass());
+	}
 }

@@ -12,8 +12,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * Collection result. <br>
  * 
  * Example : <br>
- * (1) {"items": [{"id": 1, "name": "JALO"}, {"id": 2, "name": "DENG"}, ...], "page": 1, "totalPage": 10, "size": 10, "total": 100, "message": true} <br>
- * (2) {"page": 0, "totalPage": 0, "size": 0, "total": 0, "success": false, "message": "..."}
+ * (1) {"items": [{"id": 1, "name": "JALO"}, {"id": 2, "name": "DENG"}, ...],
+ * 		"page": 1, "totalPage": 10, "size": 10, "total": 100, "success": true,
+ * 		"empty": false} <br>
+ * (2) {"total": 0, "success": true, "empty": true} <br>
+ * (3) {"success": false, "empty": true, "message": "..."}
  *
  * @Author JALO
  */
@@ -21,42 +24,43 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class CollectionResult<T> extends Result<T> {
 
 	private List<T> items;
-	
+
 	private Integer page;
-	
+
 	private Integer totalPage;
 
 	private Integer size;
-	
+
 	private Long total;
-	
+
 	public CollectionResult(Page<T> page) {
-		super(!page.getContent().isEmpty(), null);
+		super(true, page.getContent().isEmpty(), null);
+		Boolean isPageEmpty = page.getContent().isEmpty();
 		this.items = new ArrayList<>(page.getContent());
-		this.page = page.getContent().isEmpty() ? 0 : page.getNumber() + 1;
-		this.totalPage = page.getTotalPages();
-		this.size = page.getNumberOfElements();
-		this.total = page.getTotalElements();
+		this.page = isPageEmpty ? null : page.getNumber() + 1;
+		this.totalPage = isPageEmpty ? null : page.getTotalPages();
+		this.size = isPageEmpty ? null : page.getNumberOfElements();
+		this.total = isPageEmpty ? 0 : page.getTotalElements();
 	}
-	
+
 	public CollectionResult(List<T> items) {
-		super(!items.isEmpty(), null);
+		super(true, items.isEmpty(), null);
 		this.items = items;
 		this.page = null;
 		this.totalPage = null;
 		this.size = null;
 		this.total = Long.valueOf(items.size());
 	}
-	
+
 	public CollectionResult(Exception e) {
 		super(e);
 		this.items = null;
 		this.page = null;
 		this.totalPage = null;
 		this.size = null;
-		this.total = 0L;
+		this.total = null;
 	}
-	
+
 	public List<T> getItems() {
 		return items;
 	}
@@ -69,7 +73,7 @@ public class CollectionResult<T> extends Result<T> {
 		return totalPage;
 	}
 
-	public Integer getCurrentCount() {
+	public Integer getSize() {
 		return size;
 	}
 
