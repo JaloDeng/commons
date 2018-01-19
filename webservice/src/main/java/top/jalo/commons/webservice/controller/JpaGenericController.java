@@ -34,7 +34,7 @@ import top.jalo.commons.webservice.service.JpaGenericService;
 public abstract class JpaGenericController<E, M, EID extends Serializable, MID extends Serializable> {
 
 	@Autowired
-	protected JpaGenericService<E, M, EID, MID> service;
+	private JpaGenericService<E, M, EID, MID> service;
 
 	/**
 	 * Query one by id. <br>

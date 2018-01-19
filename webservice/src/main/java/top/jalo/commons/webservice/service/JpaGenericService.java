@@ -13,9 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.web.servlet.ModelAndView;
 
-import top.jalo.commons.util.StringUtils;
 import top.jalo.commons.webservice.exception.HttpStatusException;
 import top.jalo.commons.webservice.model.CollectionResult;
 import top.jalo.commons.webservice.model.Result;
@@ -98,20 +96,6 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 
 	/**
 	 * Query one by id.
-	 *
-	 * @param modelId
-	 * @param viewName
-	 * @param args
-	 * @return ModelAndView
-	 * @throws Exception
-	 */
-	public ModelAndView findByIdAndView(MID modelId, String viewName, Object... args) throws Exception {
-		StringUtils.isViewNameBlank(viewName);
-		return new ModelAndView(viewName, "result", findById(modelId));
-	}
-
-	/**
-	 * Query one by id.
 	 * 
 	 * @param modelId
 	 * @param args
@@ -133,22 +117,6 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		M model = convertToModel(entity, args);
 		LOGGER.info("Model : " + model.toString());
 		return new Result<M>(model);
-	}
-
-	/**
-	 * Query collection by id's collection.
-	 *
-	 * @param modelIds
-	 * @param model
-	 * @param viewName
-	 * @param args
-	 * @return ModelAndView
-	 * @throws Exception
-	 */
-	public ModelAndView findByIdsAndView(Collection<MID> modelIds, String viewName, Object... args)
-			throws Exception {
-		StringUtils.isViewNameBlank(viewName);
-		return new ModelAndView(viewName, "result", findByIds(modelIds));
 	}
 
 	/**
@@ -177,23 +145,6 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			}
 			return null;
 		}).collect(Collectors.toList());
-	}
-
-	/**
-	 * Query all.
-	 *
-	 * @param page
-	 * @param size
-	 * @param sorts
-	 * @param viewName
-	 * @param args
-	 * @return ModelAndView
-	 * @throws Exception
-	 */
-	public ModelAndView findAllAndView(Integer page, Integer size, String sorts, String viewName, Object... args)
-			throws Exception {
-		StringUtils.isViewNameBlank(viewName);
-		return new ModelAndView(viewName, "result", findAll(page, size, sorts, args));
 	}
 
 	/**
@@ -246,20 +197,6 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 
 	/**
 	 * Create by model.
-	 *
-	 * @param model
-	 * @param viewName
-	 * @param args
-	 * @return ModelAndView
-	 * @throws Exception
-	 */
-	public ModelAndView createAndView(M model, String viewName, Object... args) throws Exception {
-		StringUtils.isViewNameBlank(viewName);
-		return new ModelAndView(viewName, "result", create(model, args));
-	}
-
-	/**
-	 * Create by model.
 	 * 
 	 * @param model
 	 * @param args
@@ -277,22 +214,6 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			LOGGER.error("Fail to create entity : " + e.toString());
 			return new Result<>(new Exception("Fail to create entity : " + e.getMessage()));
 		}
-	}
-
-	/**
-	 * Update all column by model and id.
-	 *
-	 * @param modelId
-	 * @param model
-	 * @param viewName
-	 * @param args
-	 * @return ModelAndView
-	 * @throws Exception
-	 */
-	public ModelAndView fullUpdateByIdAndView(MID modelId, M model, String viewName, Object... args)
-			throws Exception {
-		StringUtils.isViewNameBlank(viewName);
-		return new ModelAndView(viewName, "result", fullUpdateById(modelId, model, args));
 	}
 
 	/**
@@ -337,22 +258,6 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 
 	/**
 	 * Update partial column by model and id.
-	 *
-	 * @param modelId
-	 * @param model
-	 * @param viewName
-	 * @param args
-	 * @return ModelAndView
-	 * @throws Exception
-	 */
-	public ModelAndView partialUpdateByIdAndView(MID modelId, M model, String viewName, Object... args)
-			throws Exception {
-		StringUtils.isViewNameBlank(viewName);
-		return new ModelAndView(viewName, "result", partialUpdateById(modelId, model, args));
-	}
-
-	/**
-	 * Update partial column by model and id.
 	 * 
 	 * @param modelId
 	 * @param model
@@ -389,20 +294,6 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			LOGGER.error(e.toString());
 			return new Result<>(new Exception("Fail to update entity partial : " + e.getMessage()));
 		}
-	}
-
-	/**
-	 * Delete by id.
-	 *
-	 * @param modelId
-	 * @param viewName
-	 * @param args
-	 * @return ModelAndView
-	 * @throws Exception
-	 */
-	public ModelAndView deleteByIdAndView(MID modelId, String viewName, Object... args) throws Exception {
-		StringUtils.isViewNameBlank(viewName);
-		return new ModelAndView(viewName, "result", deleteById(modelId, args));
 	}
 
 	/**

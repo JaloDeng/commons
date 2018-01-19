@@ -5,22 +5,21 @@ import java.io.Serializable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import top.jalo.commons.util.annotation.ViewFinder;
+import top.jalo.commons.webservice.service.JpaGenericMVService;
 
 /**
- * Generic Controller for JPA which all methods return ModelAndView.
+ * Generic Controller for JPA that all methods return ModelAndView.
  *
  * @Author JALO
  *
@@ -28,6 +27,9 @@ import top.jalo.commons.util.annotation.ViewFinder;
 public abstract class JpaGenericMVController<E, M, EID extends Serializable, MID extends Serializable>
 		extends JpaGenericController<E, M, EID, MID> {
 
+	@Autowired
+	protected JpaGenericMVService<E, M, EID, MID> service;
+	
 	/**
 	 * Get the empty form for create.
 	 * 
@@ -55,7 +57,7 @@ public abstract class JpaGenericMVController<E, M, EID extends Serializable, MID
 	@ResponseStatus(HttpStatus.OK)
 	public ModelAndView findByIdAndView(@PathVariable MID id, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		return service.findByIdAndView(id, String.format("%sForm", ViewFinder.getView(this)));
+		return service.findById(String.format("%sForm", ViewFinder.getView(this)), id);
 	}
 
 	/**
@@ -74,7 +76,7 @@ public abstract class JpaGenericMVController<E, M, EID extends Serializable, MID
 	public ModelAndView findAllAndView(@RequestParam(defaultValue = "1") Integer page,
 			@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String sorts,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return service.findAllAndView(page, size, sorts, String.format("%sGrid", ViewFinder.getView(this)));
+		return service.findAll(String.format("%sGrid", ViewFinder.getView(this)), page, size, sorts);
 	}
 
 	/**
@@ -86,11 +88,11 @@ public abstract class JpaGenericMVController<E, M, EID extends Serializable, MID
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	@PostMapping("/form")
+	@PostMapping("/create")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ModelAndView createAndView(@RequestBody M model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		return service.createAndView(model, String.format("%sForm", ViewFinder.getView(this)));
+		return service.create(String.format("%sForm", ViewFinder.getView(this)), model);
 	}
 
 	/**
@@ -103,11 +105,11 @@ public abstract class JpaGenericMVController<E, M, EID extends Serializable, MID
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	@PutMapping("/form/{id}")
+	@PostMapping("/fullupdate/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public ModelAndView fullUpdateByIdAndView(@PathVariable MID id, @RequestBody M model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		return service.fullUpdateByIdAndView(id, model, String.format("%sForm", ViewFinder.getView(this)));
+		return service.fullUpdateById(String.format("%sForm", ViewFinder.getView(this)), id, model);
 	}
 
 	/**
@@ -120,27 +122,26 @@ public abstract class JpaGenericMVController<E, M, EID extends Serializable, MID
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	@PatchMapping("/form/{id}")
+	@PostMapping("/partialupdate/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public ModelAndView partialUpdateByIdAndView(@PathVariable MID id, @RequestBody M model,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return service.partialUpdateByIdAndView(id, model, String.format("%sForm", ViewFinder.getView(this)));
+		return service.partialUpdateById(String.format("%sForm", ViewFinder.getView(this)), id, model);
 	}
 
 	/**
 	 * Delete by id.
 	 *
 	 * @param id
-	 * @param model
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
 	 * @throws Exception
 	 */
-	@DeleteMapping("/form/{id}")
+	@PostMapping("/delete/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public ModelAndView deleteByIdAndView(@PathVariable MID id, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		return service.deleteByIdAndView(id, String.format("%sGrid", ViewFinder.getView(this)));
+		return service.deleteById(String.format("%sGrid", ViewFinder.getView(this)), id);
 	}
 }
