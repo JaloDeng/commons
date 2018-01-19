@@ -6,68 +6,68 @@ import org.springframework.http.HttpStatus;
  * @author JALO
  *
  */
-public class HttpStatusException extends Exception {
+public class GenericException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	private int status;
+	private final int status;
 	
-	public HttpStatusException() {
+	public GenericException() {
 		super();
 		this.status = HttpStatus.INTERNAL_SERVER_ERROR.value();
 	}
 	
-	public HttpStatusException(String message) {
+	public GenericException(String message) {
 		super(message);
 		this.status = HttpStatus.INTERNAL_SERVER_ERROR.value(); 
 	}
 	
-	public HttpStatusException(Throwable cause) {
+	public GenericException(Throwable cause) {
 		super(cause);
 		this.status = HttpStatus.INTERNAL_SERVER_ERROR.value(); 
 	}
 	
-	public HttpStatusException(String message, Throwable cause) {
+	public GenericException(String message, Throwable cause) {
 		super(message, cause);
 		this.status = HttpStatus.INTERNAL_SERVER_ERROR.value(); 
 	}
 	
-	public HttpStatusException(int statusCodeValue) {
+	public GenericException(int statusCodeValue) {
 		super();
 		this.status = statusCodeValue;
 	}
 	
-	public HttpStatusException(int statusCodeValue, String message) {
+	public GenericException(int statusCodeValue, String message) {
 		super(message);
 		this.status = statusCodeValue;
 	}
 	
-	public HttpStatusException(int statusCodeValue, Throwable cause) {
+	public GenericException(int statusCodeValue, Throwable cause) {
 		super(cause);
 		this.status = statusCodeValue;
 	}
 	
-	public HttpStatusException(int statusCodeValue, String message, Throwable cause) {
+	public GenericException(int statusCodeValue, String message, Throwable cause) {
 		super(message, cause);
 		this.status = statusCodeValue;
 	}
 	
-	public HttpStatusException(HttpStatus statusCode) {
+	public GenericException(HttpStatus statusCode) {
 		super();
 		this.status = statusCode.value();
 	}
 	
-	public HttpStatusException(HttpStatus statusCode, String message) {
+	public GenericException(HttpStatus statusCode, String message) {
 		super(message);
 		this.status = statusCode.value();
 	}
 	
-	public HttpStatusException(HttpStatus statusCode, Throwable cause) {
+	public GenericException(HttpStatus statusCode, Throwable cause) {
 		super(cause);
 		this.status = statusCode.value();
 	}
 	
-	public HttpStatusException(HttpStatus statusCode, String message, Throwable cause) {
+	public GenericException(HttpStatus statusCode, String message, Throwable cause) {
 		super(message, cause);
 		this.status = statusCode.value();
 	}
@@ -79,4 +79,5 @@ public class HttpStatusException extends Exception {
 	public int getStatusCodeValue() {
 		return status;
 	}
+
 }

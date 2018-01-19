@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
  * @author JALO
  *
  */
-public class ResourceNotFoundException extends HttpStatusException {
+public class ResourceNotFoundException extends GenericException {
 
 	private static final long serialVersionUID = 1L;
 	
-	private String resource;
+	private final String resource;
 	
 	public ResourceNotFoundException(String resource) {
 		super(HttpStatus.NOT_FOUND);

@@ -105,6 +105,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	public Result<M> findById(MID modelId, Object... args) throws Exception {
 		if (modelId == null) {
 			LOGGER.error("Id is null.");
+			// TODO throw Exception and message
 			return new Result<>(new Exception("Id is null."));
 		}
 
@@ -132,7 +133,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		if (entities == null || entities.isEmpty()) {
 			LOGGER.error("Can not find models by ids.");
 			// TODO: handle exception and throws result message.
-			throw new Exception("Can not find models by ids.");
+			throw new ResourceNotFoundException(modelIds.toString());
 		}
 
 		return entities.stream().map(entity -> {
@@ -168,11 +169,12 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		}).collect(Collectors.toList()), pageable, entities.getTotalElements());
 		if (models.getTotalElements() == 0) {
 			LOGGER.info("Data is empty.");
-		} else {
-			LOGGER.info("Data's total is [{}], total page is [{}], current count is [{}], current page is [{}].", models.getTotalElements(),
-					models.getTotalPages(), models.getNumberOfElements(), models.getTotalElements() == 0 ? 0 :models.getNumber() + 1);
-			LOGGER.info("Data's collection : " + models.getContent().toString());
+			throw new ResourceNotFoundException("data's collection");
 		}
+		LOGGER.info("Data's total is [{}], total page is [{}], current count is [{}], current page is [{}].", models.getTotalElements(),
+				models.getTotalPages(), models.getNumberOfElements(), models.getNumber() + 1);
+		LOGGER.info("Data's collection : " + models.getContent().toString());
+		
 		return new CollectionResult<M>(models);
 	}
 
@@ -211,6 +213,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			return new Result<M>(resultModel);
 		} catch (Exception e) {
 			LOGGER.error("Fail to create entity : " + e.toString());
+			// TODO throw Exception and message
 			return new Result<>(new Exception("Fail to create entity : " + e.getMessage()));
 		}
 	}
@@ -228,7 +231,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		E referenceEntity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (referenceEntity == null) {
 			LOGGER.error("Can not find entity where id is [{}] to update full.", modelId);
-			return new Result<>(new Exception(String.format("Can not find entity where id is [%s] to update full.", modelId.toString())));
+			throw new ResourceNotFoundException(modelId.toString());
 		}
 		return fullUpdate(referenceEntity, model, args);
 	}
@@ -251,6 +254,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			return new Result<M>(resultModel);
 		} catch (Exception e) {
 			LOGGER.error(e.toString());
+			// TODO throw Exception and message
 			return new Result<>(new Exception("Fail to update entity full : " + e.getMessage()));
 		}
 	}
@@ -268,7 +272,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		E referenceEntity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (referenceEntity == null) {
 			LOGGER.error("Can not find entity where id is [{}] to update partial.", modelId);
-			return new Result<>(new Exception(String.format("Can not find entity where id is [%s] to update partial.", modelId.toString())));
+			throw new ResourceNotFoundException(modelId.toString());
 		}
 		return partialUpdate(referenceEntity, model, args);
 	}
@@ -291,6 +295,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			return new Result<M>(resultModel);
 		} catch (Exception e) {
 			LOGGER.error(e.toString());
+			// TODO throw Exception and message
 			return new Result<>(new Exception("Fail to update entity partial : " + e.getMessage()));
 		}
 	}
@@ -307,7 +312,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 		E entity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (entity == null) {
 			LOGGER.error("Can not find entity where id is [{}] to delete.", modelId);
-			return new Result<>(new Exception(String.format("Can not find entity where id is [%s] to delete.", modelId.toString())));
+			throw new ResourceNotFoundException(modelId.toString());
 		}
 		return delete(entity, args);
 	}
@@ -328,6 +333,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			return new Result<M>(model);
 		} catch (Exception e) {
 			LOGGER.error(e.toString());
+			// TODO throw Exception and message
 			return new Result<>(new Exception("Fail to delete entity : " + e.getMessage()));
 		}
 	}

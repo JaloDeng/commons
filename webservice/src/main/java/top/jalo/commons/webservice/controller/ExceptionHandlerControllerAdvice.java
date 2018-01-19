@@ -4,23 +4,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import top.jalo.commons.webservice.exception.HttpStatusException;
-import top.jalo.commons.webservice.exception.ResourceNotFoundException;
+import top.jalo.commons.webservice.exception.GenericException;
+import top.jalo.commons.webservice.model.ExceptionResult;
 
 /**
  * @author JALO
  *
  */
-//@ControllerAdvice
+@ControllerAdvice
 public class ExceptionHandlerControllerAdvice {
 
-	//@ExceptionHandler(HttpStatusException.class)
-	public ResponseEntity<String> handleHttpStatusException(HttpStatusException e) {
-		return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
+	@ExceptionHandler(GenericException.class)
+	public ResponseEntity<ExceptionResult> handleHttpStatusException(GenericException e) {
+		return ResponseEntity.status(e.getStatusCode()).body(new ExceptionResult(e.getStatusCodeValue(), false, e.getMessage()));
 	}
 	
-	//@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e) {
-		return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
-	}
 }
