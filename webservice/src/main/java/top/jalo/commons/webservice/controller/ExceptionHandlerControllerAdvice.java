@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import top.jalo.commons.webservice.exception.GenericException;
+import top.jalo.commons.webservice.exception.ResourceSQLDuplicatedException;
 import top.jalo.commons.webservice.model.ExceptionResult;
 import top.jalo.commons.webservice.model.SQLExceptionResult;
 
@@ -21,6 +22,11 @@ public class ExceptionHandlerControllerAdvice {
 	@ExceptionHandler(GenericException.class)
 	public ResponseEntity<ExceptionResult> handleHttpStatusException(GenericException e) {
 		return ResponseEntity.status(e.getStatusCode()).body(new ExceptionResult(e.getStatusCodeValue(), false, e.getMessage()));
+	}
+	
+	@ExceptionHandler(ResourceSQLDuplicatedException.class)
+	public ResponseEntity<SQLExceptionResult> handleResourceSQLDuplicatedException(ResourceSQLDuplicatedException e) {
+		return ResponseEntity.status(e.getStatusCode()).body(new SQLExceptionResult(e));
 	}
 	
 	@ExceptionHandler(SQLException.class)

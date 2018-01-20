@@ -1,6 +1,7 @@
 package top.jalo.commons.webservice.service;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ import top.jalo.commons.webservice.exception.ResourceDependedException;
 import top.jalo.commons.webservice.exception.ResourceDuplicatedException;
 import top.jalo.commons.webservice.exception.ResourceNotFoundException;
 import top.jalo.commons.webservice.exception.ResourcePropertyException;
+import top.jalo.commons.webservice.exception.ResourceSQLDuplicatedException;
 import top.jalo.commons.webservice.model.CollectionResult;
 import top.jalo.commons.webservice.model.Result;
 import top.jalo.commons.webservice.model.Sorter;
@@ -220,7 +222,9 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			if (e.getCause() instanceof PropertyValueException) {
 				throw new ResourcePropertyException(((PropertyValueException) e.getCause()).getPropertyName(), e);
 			} else if (e.getCause() instanceof ConstraintViolationException) {
-				throw new ResourceDuplicatedException(((ConstraintViolationException) e.getCause()).getConstraintName(), e);
+				ConstraintViolationException constraintViolationException = (ConstraintViolationException) e.getCause();
+				SQLException sqlException = constraintViolationException.getSQLException();
+				throw new ResourceSQLDuplicatedException(sqlException.getErrorCode(), sqlException.getSQLState(), sqlException.getMessage());
 			}
 			throw new ResourceDuplicatedException(model.toString(), e);
 		}
@@ -267,7 +271,9 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			if (e.getCause() instanceof PropertyValueException) {
 				throw new ResourcePropertyException(((PropertyValueException) e.getCause()).getPropertyName(), e);
 			} else if (e.getCause() instanceof ConstraintViolationException) {
-				throw new ResourceDuplicatedException(((ConstraintViolationException) e.getCause()).getConstraintName(), e);
+				ConstraintViolationException constraintViolationException = (ConstraintViolationException) e.getCause();
+				SQLException sqlException = constraintViolationException.getSQLException();
+				throw new ResourceSQLDuplicatedException(sqlException.getErrorCode(), sqlException.getSQLState(), sqlException.getMessage());
 			}
 			throw new ResourceDuplicatedException(model.toString(), e);
 		}
@@ -314,7 +320,9 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			if (e.getCause() instanceof PropertyValueException) {
 				throw new ResourcePropertyException(((PropertyValueException) e.getCause()).getPropertyName(), e);
 			} else if (e.getCause() instanceof ConstraintViolationException) {
-				throw new ResourceDuplicatedException(((ConstraintViolationException) e.getCause()).getConstraintName(), e);
+				ConstraintViolationException constraintViolationException = (ConstraintViolationException) e.getCause();
+				SQLException sqlException = constraintViolationException.getSQLException();
+				throw new ResourceSQLDuplicatedException(sqlException.getErrorCode(), sqlException.getSQLState(), sqlException.getMessage());
 			}
 			throw new ResourceDuplicatedException(model.toString(), e);
 		}
