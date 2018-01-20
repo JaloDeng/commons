@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.util.Assert;
 
 import top.jalo.commons.webservice.exception.ResourceDependedException;
 import top.jalo.commons.webservice.exception.ResourceDuplicatedException;
@@ -109,12 +110,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @throws Exception
 	 */
 	public Result<M> findById(MID modelId, Object... args) throws Exception {
-		if (modelId == null) {
-			LOGGER.error("Id is null.");
-			// TODO throw Exception and message
-			return new Result<>(new Exception("Id is null."));
-		}
-
+		Assert.notNull(modelId, "Model'id is null.");
 		E entity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (entity == null) {
 			LOGGER.error("Can not find model where id is [{}].", modelId);
@@ -134,11 +130,11 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @throws Exception
 	 */
 	public Collection<M> findByIds(Collection<MID> modelIds, Object... args) throws Exception {
+		Assert.notEmpty(modelIds, "Ids is null.");
 		List<E> entities = jpaRepository
 				.findAll(modelIds.stream().map(this::convertToEntityId).collect(Collectors.toList()));
 		if (entities == null || entities.isEmpty()) {
 			LOGGER.error("Can not find models by ids.");
-			// TODO: handle exception and throws result message.
 			throw new ResourceNotFoundException(modelIds.toString());
 		}
 
@@ -147,6 +143,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 				return convertToModel(entity, args);
 			} catch (Exception e) {
 				LOGGER.error(e.toString());
+				// TODO: handle exception and throws result message.
 				e.printStackTrace();
 			}
 			return null;
@@ -211,6 +208,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @throws Exception
 	 */
 	public Result<M> create(M model, Object... args) throws Exception {
+		Assert.notNull(model, "Model is null.");
 		try {
 			E entity = convertToEntity(model, null, false, args);
 			jpaRepository.saveAndFlush(entity);
@@ -238,6 +236,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @throws Exception
 	 */
 	public Result<M> fullUpdateById(MID modelId, M model, Object... args) throws Exception {
+		Assert.notNull(modelId, "Model'id is null.");
 		E referenceEntity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (referenceEntity == null) {
 			LOGGER.error("Can not find entity where id is [{}] to update full.", modelId);
@@ -256,6 +255,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @throws Exception
 	 */
 	protected Result<M> fullUpdate(E referenceEntity, M model, Object... args) throws Exception {
+		Assert.notNull(model, "Model is null.");
 		try {
 			E entity = convertToEntity(model, referenceEntity, false, args);
 			jpaRepository.saveAndFlush(entity);
@@ -283,6 +283,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @throws Exception
 	 */
 	public Result<M> partialUpdateById(MID modelId, M model, Object... args) throws Exception {
+		Assert.notNull(modelId, "Model'id is null.");
 		E referenceEntity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (referenceEntity == null) {
 			LOGGER.error("Can not find entity where id is [{}] to update partial.", modelId);
@@ -301,6 +302,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @throws Exception
 	 */
 	protected Result<M> partialUpdate(E referenceEntity, M model, Object... args) throws Exception {
+		Assert.notNull(model, "Model is null.");
 		try {
 			E entity = convertToEntity(model, referenceEntity, true, args);
 			jpaRepository.saveAndFlush(entity);
@@ -327,6 +329,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @throws Exception
 	 */
 	public Result<M> deleteById(MID modelId, Object... args) throws Exception {
+		Assert.notNull(modelId, "Model'id is null.");
 		E entity = jpaRepository.findOne(convertToEntityId(modelId));
 		if (entity == null) {
 			LOGGER.error("Can not find entity where id is [{}] to delete.", modelId);
@@ -344,6 +347,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 	 * @throws Exception
 	 */
 	protected Result<M> delete(E entity, Object... args) throws Exception {
+		Assert.notNull(entity, "Entity is null.");
 		try {
 			M model = convertToModel(entity, args);
 			jpaRepository.delete(entity);

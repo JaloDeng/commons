@@ -3,9 +3,8 @@ package top.jalo.commons.webservice.service;
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
-
-import top.jalo.commons.util.StringUtils;
 
 /**
  * Generic Service for JPA that all methods return ModelAndView.
@@ -29,7 +28,7 @@ public abstract class JpaGenericMVService<E, M, EID extends Serializable, MID ex
 	 * @throws Exception
 	 */
 	public ModelAndView findById(String viewName, MID modelId, Object... args) throws Exception {
-		StringUtils.isViewNameBlank(viewName);
+		Assert.notNull(viewName, "View is null.");
 		return new ModelAndView(viewName, "result", findById(modelId));
 	}
 
@@ -45,7 +44,7 @@ public abstract class JpaGenericMVService<E, M, EID extends Serializable, MID ex
 	 */
 	public ModelAndView findByIds(String viewName, Collection<MID> modelIds, Object... args)
 			throws Exception {
-		StringUtils.isViewNameBlank(viewName);
+		Assert.notNull(viewName, "View is null.");
 		return new ModelAndView(viewName, "result", findByIds(modelIds));
 	}
 
@@ -62,7 +61,7 @@ public abstract class JpaGenericMVService<E, M, EID extends Serializable, MID ex
 	 */
 	public ModelAndView findAll(String viewName, Integer page, Integer size, String sorts, Object... args)
 			throws Exception {
-		StringUtils.isViewNameBlank(viewName);
+		Assert.notNull(viewName, "View is null.");
 		return new ModelAndView(viewName, "result", findAll(page, size, sorts, args));
 	}
 
@@ -76,7 +75,7 @@ public abstract class JpaGenericMVService<E, M, EID extends Serializable, MID ex
 	 * @throws Exception
 	 */
 	public ModelAndView create(String viewName, M model, Object... args) throws Exception {
-		StringUtils.isViewNameBlank(viewName);
+		Assert.notNull(viewName, "View is null.");
 		return new ModelAndView(viewName, "result", create(model, args));
 	}
 
@@ -92,7 +91,7 @@ public abstract class JpaGenericMVService<E, M, EID extends Serializable, MID ex
 	 */
 	public ModelAndView fullUpdateById(String viewName, MID modelId, M model, Object... args)
 			throws Exception {
-		StringUtils.isViewNameBlank(viewName);
+		Assert.notNull(viewName, "View is null.");
 		return new ModelAndView(viewName, "result", fullUpdateById(modelId, model, args));
 	}
 
@@ -108,7 +107,7 @@ public abstract class JpaGenericMVService<E, M, EID extends Serializable, MID ex
 	 */
 	public ModelAndView partialUpdateById(String viewName, MID modelId, M model, Object... args)
 			throws Exception {
-		StringUtils.isViewNameBlank(viewName);
+		Assert.notNull(viewName, "View is null.");
 		return new ModelAndView(viewName, "result", partialUpdateById(modelId, model, args));
 	}
 
@@ -122,7 +121,7 @@ public abstract class JpaGenericMVService<E, M, EID extends Serializable, MID ex
 	 * @throws Exception
 	 */
 	public ModelAndView deleteById(String viewName, MID modelId, Object... args) throws Exception {
-		StringUtils.isViewNameBlank(viewName);
+		Assert.notNull(viewName, "View is null.");
 		return new ModelAndView(viewName, "result", deleteById(modelId, args));
 	}
 }
