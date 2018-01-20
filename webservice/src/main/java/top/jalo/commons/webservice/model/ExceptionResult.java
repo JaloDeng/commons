@@ -1,9 +1,13 @@
 package top.jalo.commons.webservice.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * @author JALO
  *
  */
+@JsonInclude(Include.NON_EMPTY)
 public class ExceptionResult {
 
 	private final int status;

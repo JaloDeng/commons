@@ -5,16 +5,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.PropertyValueException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import top.jalo.commons.webservice.exception.ResourceDependedException;
+import top.jalo.commons.webservice.exception.ResourceDuplicatedException;
 import top.jalo.commons.webservice.exception.ResourceNotFoundException;
+import top.jalo.commons.webservice.exception.ResourcePropertyException;
 import top.jalo.commons.webservice.model.CollectionResult;
 import top.jalo.commons.webservice.model.Result;
 import top.jalo.commons.webservice.model.Sorter;
@@ -211,10 +217,14 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			M resultModel = convertToModel(entity, args);
 			LOGGER.info("Success to create entity : " + resultModel.toString());
 			return new Result<M>(resultModel);
-		} catch (Exception e) {
-			LOGGER.error("Fail to create entity : " + e.toString());
-			// TODO throw Exception and message
-			return new Result<>(new Exception("Fail to create entity : " + e.getMessage()));
+		} catch (DataIntegrityViolationException e) {
+			LOGGER.error("Fail to create entity : " + e.getMessage());
+			if (e.getCause() instanceof PropertyValueException) {
+				throw new ResourcePropertyException(((PropertyValueException) e.getCause()).getPropertyName(), e);
+			} else if (e.getCause() instanceof ConstraintViolationException) {
+				throw new ResourceDuplicatedException(((ConstraintViolationException) e.getCause()).getConstraintName(), e);
+			}
+			throw new ResourceDuplicatedException(model.toString(), e);
 		}
 	}
 
@@ -252,10 +262,14 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			M resultModel = convertToModel(entity, args);
 			LOGGER.info("Success to update entity full : " + resultModel.toString());
 			return new Result<M>(resultModel);
-		} catch (Exception e) {
-			LOGGER.error(e.toString());
-			// TODO throw Exception and message
-			return new Result<>(new Exception("Fail to update entity full : " + e.getMessage()));
+		} catch (DataIntegrityViolationException e) {
+			LOGGER.error("Fail to update entity full : " + e.getMessage());
+			if (e.getCause() instanceof PropertyValueException) {
+				throw new ResourcePropertyException(((PropertyValueException) e.getCause()).getPropertyName(), e);
+			} else if (e.getCause() instanceof ConstraintViolationException) {
+				throw new ResourceDuplicatedException(((ConstraintViolationException) e.getCause()).getConstraintName(), e);
+			}
+			throw new ResourceDuplicatedException(model.toString(), e);
 		}
 	}
 
@@ -293,10 +307,14 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			M resultModel = convertToModel(entity, args);
 			LOGGER.info("Success to update entity partial : " + resultModel.toString());
 			return new Result<M>(resultModel);
-		} catch (Exception e) {
-			LOGGER.error(e.toString());
-			// TODO throw Exception and message
-			return new Result<>(new Exception("Fail to update entity partial : " + e.getMessage()));
+		} catch (DataIntegrityViolationException e) {
+			LOGGER.error("Fail to update entity partial : " + e.getMessage());
+			if (e.getCause() instanceof PropertyValueException) {
+				throw new ResourcePropertyException(((PropertyValueException) e.getCause()).getPropertyName(), e);
+			} else if (e.getCause() instanceof ConstraintViolationException) {
+				throw new ResourceDuplicatedException(((ConstraintViolationException) e.getCause()).getConstraintName(), e);
+			}
+			throw new ResourceDuplicatedException(model.toString(), e);
 		}
 	}
 
@@ -331,10 +349,9 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			jpaRepository.delete(entity);
 			LOGGER.info("Success to delete entity : " + model.toString());
 			return new Result<M>(model);
-		} catch (Exception e) {
-			LOGGER.error(e.toString());
-			// TODO throw Exception and message
-			return new Result<>(new Exception("Fail to delete entity : " + e.getMessage()));
+		} catch (DataIntegrityViolationException e) {
+			LOGGER.error("Fail to delete entity : " + e.getMessage());
+			throw new ResourceDependedException(entity.toString());
 		}
 	}
 }
