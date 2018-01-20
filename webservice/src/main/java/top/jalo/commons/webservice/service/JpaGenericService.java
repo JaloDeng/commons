@@ -23,7 +23,7 @@ import top.jalo.commons.webservice.exception.ResourceDependedException;
 import top.jalo.commons.webservice.exception.ResourceDuplicatedException;
 import top.jalo.commons.webservice.exception.ResourceNotFoundException;
 import top.jalo.commons.webservice.exception.ResourcePropertyException;
-import top.jalo.commons.webservice.exception.ResourceSQLDuplicatedException;
+import top.jalo.commons.webservice.exception.ResourceSQLException;
 import top.jalo.commons.webservice.model.CollectionResult;
 import top.jalo.commons.webservice.model.Result;
 import top.jalo.commons.webservice.model.Sorter;
@@ -224,7 +224,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			} else if (e.getCause() instanceof ConstraintViolationException) {
 				ConstraintViolationException constraintViolationException = (ConstraintViolationException) e.getCause();
 				SQLException sqlException = constraintViolationException.getSQLException();
-				throw new ResourceSQLDuplicatedException(sqlException.getErrorCode(), sqlException.getSQLState(), sqlException.getMessage());
+				throw new ResourceSQLException(sqlException.getErrorCode(), sqlException.getSQLState(), sqlException.getMessage());
 			}
 			throw new ResourceDuplicatedException(model.toString(), e);
 		}
@@ -273,7 +273,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			} else if (e.getCause() instanceof ConstraintViolationException) {
 				ConstraintViolationException constraintViolationException = (ConstraintViolationException) e.getCause();
 				SQLException sqlException = constraintViolationException.getSQLException();
-				throw new ResourceSQLDuplicatedException(sqlException.getErrorCode(), sqlException.getSQLState(), sqlException.getMessage());
+				throw new ResourceSQLException(sqlException.getErrorCode(), sqlException.getSQLState(), sqlException.getMessage());
 			}
 			throw new ResourceDuplicatedException(model.toString(), e);
 		}
@@ -322,7 +322,7 @@ public abstract class JpaGenericService<E, M, EID extends Serializable, MID exte
 			} else if (e.getCause() instanceof ConstraintViolationException) {
 				ConstraintViolationException constraintViolationException = (ConstraintViolationException) e.getCause();
 				SQLException sqlException = constraintViolationException.getSQLException();
-				throw new ResourceSQLDuplicatedException(sqlException.getErrorCode(), sqlException.getSQLState(), sqlException.getMessage());
+				throw new ResourceSQLException(sqlException.getErrorCode(), sqlException.getSQLState(), sqlException.getMessage());
 			}
 			throw new ResourceDuplicatedException(model.toString(), e);
 		}

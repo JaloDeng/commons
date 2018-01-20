@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import top.jalo.commons.webservice.exception.ResourceSQLDuplicatedException;
+import top.jalo.commons.webservice.exception.ResourceSQLException;
 
 /**
  * @author JALO
@@ -26,7 +26,7 @@ public class SQLExceptionResult extends ExceptionResult {
 		this.SQLState = e.getSQLState();
 	}
 	
-	public SQLExceptionResult(ResourceSQLDuplicatedException e) {
+	public SQLExceptionResult(ResourceSQLException e) {
 		super(e.getStatusCode().value(), false, e.getMessage());
 		this.errorCode = e.getErrorCode();
 		this.SQLState = e.getSQLState();
@@ -39,5 +39,4 @@ public class SQLExceptionResult extends ExceptionResult {
 	public String getSQLState() {
 		return SQLState;
 	}
-
 }
