@@ -46,6 +46,10 @@ subprojects {
 		classifier = 'sources'
 		from sourceSets.main.allSource
 	}
+
+	tasks.withType(JavaCompile) {
+		options.encoding = "UTF-8"  
+	} 
 	
 	artifacts.archives packageSources
 }
